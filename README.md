@@ -1,5 +1,10 @@
 # Dredger-IoT
 
+[![CI](https://github.com/TheMadBotterINC/dredger-iot/workflows/CI/badge.svg)](https://github.com/TheMadBotterINC/dredger-iot/actions/workflows/ci.yml)
+[![Gem Version](https://badge.fury.io/rb/dredger-iot.svg)](https://badge.fury.io/rb/dredger-iot)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Ruby](https://img.shields.io/badge/ruby-%3E%3D%203.1-ruby.svg)](https://www.ruby-lang.org/)
+
 A small, FOSS Ruby library for hardware access on embedded Linux (Beaglebone Black, etc.).
 
 Goals:
@@ -226,8 +231,272 @@ backoff.each do |delay|
 end
 ```
 
+## Hardware Setup
+
+### Prerequisites
+
+On embedded Linux hardware (Beaglebone, Raspberry Pi, etc.), certain kernel modules and permissions are required.
+
+#### GPIO (libgpiod)
+
+```bash path=null start=null
+# Ensure gpiod tools are installed (optional but useful for testing)
+sudo apt-get install gpiod
+
+# Verify GPIO chips are available
+ls /dev/gpiochip*
+
+# Add user to gpio group for permissions
+sudo usermod -a -G gpio $USER
+# Log out and back in for group changes to take effect
+```
+
+#### I2C
+
+```bash path=null start=null
+# Enable I2C kernel module
+sudo modprobe i2c-dev
+
+# Make it permanent
+echo 'i2c-dev' | sudo tee -a /etc/modules
+
+# Add user to i2c group
+sudo usermod -a -G i2c $USER
+
+# Set permissions (if group doesn't exist)
+sudo chmod 666 /dev/i2c-*
+```
+
+#### DS18B20 (1-Wire)
+
+The DS18B20 sensor requires the kernel w1-gpio module:
+
+```bash path=null start=null
+# Load 1-Wire kernel modules
+sudo modprobe w1-gpio
+sudo modprobe w1-therm
+
+# Make it permanent
+echo 'w1-gpio' | sudo tee -a /etc/modules
+echo 'w1-therm' | sudo tee -a /etc/modules
+
+# Verify devices are detected
+ls /sys/bus/w1/devices/
+# Should show devices like: 28-00000xxxxxx
+```
+
+#### Beaglebone Black Device Tree
+
+For Beaglebone Black, you may need to enable device tree overlays:
+
+```bash path=null start=null
+# Edit /boot/uEnv.txt and enable overlays:
+# For I2C:
+uboot_overlay_addr4=/lib/firmware/BB-I2C1-00A0.dtbo
+
+# For GPIO/1-Wire (if using P9_12 for example):
+uboot_overlay_addr5=/lib/firmware/BB-W1-P9.12-00A0.dtbo
+
+# Reboot after changes
+sudo reboot
+```
+
+## Troubleshooting
+
+### Permission Denied Errors
+
+**Problem:** `Errno::EACCES: Permission denied - /dev/gpiochip0` or `/dev/i2c-1`
+
+**Solution:**
+```bash path=null start=null
+# Add your user to the appropriate group
+sudo usermod -a -G gpio $USER
+sudo usermod -a -G i2c $USER
+
+# Or temporarily change permissions (not recommended for production)
+sudo chmod 666 /dev/gpiochip*
+sudo chmod 666 /dev/i2c-*
+
+# Log out and back in for group changes
+```
+
+### DS18B20 Not Found
+
+**Problem:** `No DS18B20 devices found` or empty `/sys/bus/w1/devices/`
+
+**Solution:**
+```bash path=null start=null
+# Verify modules are loaded
+lsmod | grep w1
+
+# Load if missing
+sudo modprobe w1-gpio
+sudo modprobe w1-therm
+
+# Check dmesg for errors
+sudo dmesg | grep w1
+
+# Verify wiring: DS18B20 requires 4.7kΩ pull-up resistor on data line
+```
+
+### FFI Library Not Found
+
+**Problem:** `LoadError: cannot load such file -- ffi`
+
+**Solution:**
+```bash path=null start=null
+# Install FFI gem
+gem install ffi
+
+# Or ensure it's in your Gemfile
+bundle install
+```
+
+### Sensor Reading Returns Nil or Errors
+
+**Problem:** Sensor readings fail or return nil values
+
+**Solutions:**
+- **Verify wiring:** Double-check sensor connections (VCC, GND, data lines)
+- **Check I2C address:** Use `i2cdetect -y 1` to scan for devices
+- **Timing issues:** DHT22 requires ~2 second intervals between reads
+- **Power supply:** Ensure adequate power for sensors (some require 3.3V, others 5V)
+- **Enable simulation backend** for testing without hardware:
+  ```bash path=null start=null
+  export DREDGER_IOT_GPIO_BACKEND=simulation
+  export DREDGER_IOT_I2C_BACKEND=simulation
+  ```
+
+### I2C Device Not Detected
+
+**Problem:** I2C sensor not responding
+
+**Solution:**
+```bash path=null start=null
+# Install i2c-tools
+sudo apt-get install i2c-tools
+
+# Scan I2C bus (bus 1 is common, try 0 if not found)
+i2cdetect -y 1
+
+# Should show device at its address (e.g., 0x76 for BME280)
+# If not detected:
+# - Check wiring and pull-up resistors (typically 4.7kΩ on SDA/SCL)
+# - Verify I2C is enabled in device tree
+# - Check for bus conflicts
+```
+
+## API Reference
+
+### Core Modules
+
+#### `Dredger::IoT::Bus::Auto`
+
+Automatic backend selection for GPIO and I2C buses.
+
+```ruby path=null start=null
+gpio = Dredger::IoT::Bus::Auto.gpio  # Returns GPIO backend
+i2c = Dredger::IoT::Bus::Auto.i2c    # Returns I2C backend
+```
+
+#### `Dredger::IoT::Bus::GPIOLibgpiod`
+
+FFI-based GPIO access using libgpiod.
+
+**Methods:**
+- `set_direction(pin, direction)` - Set pin as `:in` or `:out`
+- `write(pin, value)` - Write `0` or `1` to output pin
+- `read(pin)` - Read current value from pin (returns `0` or `1`)
+- `close` - Release GPIO resources
+
+#### `Dredger::IoT::Bus::I2CLinux`
+
+FFI-based I2C access using Linux i2c-dev.
+
+**Methods:**
+- `write(addr, data)` - Write bytes to I2C device at address
+- `read(addr, count)` - Read bytes from I2C device
+- `write_read(addr, write_data, read_count)` - Combined write then read
+- `close` - Release I2C bus
+
+### Sensors
+
+All sensors follow a common interface:
+
+```ruby path=null start=null
+sensor = Dredger::IoT::Sensors::SensorClass.new(
+  # Sensor-specific parameters
+  provider: provider_instance,
+  metadata: { custom: 'data' }  # Optional metadata
+)
+
+readings = sensor.readings  # Returns array of Reading objects
+```
+
+#### `Reading` Object
+
+```ruby path=null start=null
+reading.sensor_type  # e.g., 'temperature', 'humidity', 'pressure'
+reading.value        # Numeric value
+reading.unit         # Unit string (e.g., 'celsius', '%', 'kPa')
+reading.metadata     # Hash of custom metadata
+reading.timestamp    # Time object when reading was taken
+```
+
+#### Available Sensors
+
+- **`DHT22`** - Temperature/humidity (GPIO)
+  - Parameters: `pin_label`, `provider`
+  - Returns: temperature (celsius), humidity (%)
+  
+- **`BME280`** - Environmental sensor (I2C)
+  - Parameters: `i2c_addr` (default: `0x76`), `provider`
+  - Returns: temperature (celsius), humidity (%), pressure (kPa)
+  
+- **`DS18B20`** - Waterproof temperature (1-Wire)
+  - Parameters: `device_id`, `provider`
+  - Returns: temperature (celsius)
+  
+- **`BMP180`** - Barometric pressure (I2C)
+  - Parameters: `i2c_addr` (default: `0x77`), `provider`
+  - Returns: temperature (celsius), pressure (kPa)
+  
+- **`MCP9808`** - High-accuracy temperature (I2C)
+  - Parameters: `i2c_addr` (default: `0x18`), `provider`
+  - Returns: temperature (celsius)
+
+### Scheduling
+
+#### `Dredger::IoT::Scheduler.periodic_with_jitter`
+
+Generates intervals with randomized jitter to avoid harmonic patterns.
+
+```ruby path=null start=null
+scheduler = Dredger::IoT::Scheduler.periodic_with_jitter(
+  base_interval: 60.0,   # Base interval in seconds
+  jitter_ratio: 0.1      # ±10% jitter
+)
+
+scheduler.each { |interval| sleep interval; poll_sensors }
+```
+
+#### `Dredger::IoT::Scheduler.exponential_backoff`
+
+Generates exponentially increasing delays for retry logic.
+
+```ruby path=null start=null
+backoff = Dredger::IoT::Scheduler.exponential_backoff(
+  base: 1.0,      # Initial delay
+  max: 30.0,      # Maximum delay
+  attempts: 5     # Number of attempts
+)
+
+backoff.each { |delay| sleep delay; break if retry_operation }
+```
+
 ## Notes
 
 - libgpiod and i2c-dev backends are optional and only required on hardware.
 - You can explicitly `require 'dredger/iot/bus/gpio_libgpiod'` or `'dredger/iot/bus/i2c_linux'` when running on target devices.
 - The Auto API will attempt to load these backends if it detects the corresponding device nodes are present.
+- Simulation backends are perfect for development and testing without hardware access.

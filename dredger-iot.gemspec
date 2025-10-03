@@ -20,6 +20,11 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 3.1'
 
+  # Platform information
+  # Note: Gem will install on any platform, but hardware backends require Linux
+  # Simulation backends work on all platforms for testing
+  spec.metadata['platforms'] = 'Hardware backends require Linux. Simulation works everywhere.'
+
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = spec.homepage
   spec.metadata['changelog_uri'] = 'https://github.com/TheMadBotterINC/dredger-iot/blob/master/CHANGELOG.md'

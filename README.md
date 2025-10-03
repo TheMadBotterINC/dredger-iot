@@ -1,4 +1,23 @@
-# Dredger-IoT
+```
+                      _______________                              
+                     |  DREDGER-IoT  |                            
+                     |_______________|                            
+                    /|   ___     ___ |\                           
+                   / |  |___|   |___|| \                          
+                  /  |______________|  \                         
+             ====|========================|====                   
+            |    |    |-----------|     |    |                   
+            |    |____|           |_____|    |                   
+         ___|____|                         |____|___             
+    ~~~~{________|_________________________|________}~~~~~~~     
+      ~~      |  \\                     //  |         ~~~        
+              |   \\___________________//   |                    
+              |_____________________________|                    
+         ~~~       \\                 //          ~~~            
+                    \\_______________//                          
+
+       Hardware Integration for Embedded Linux
+```
 
 [![CI](https://github.com/TheMadBotterINC/dredger-iot/workflows/CI/badge.svg)](https://github.com/TheMadBotterINC/dredger-iot/actions/workflows/ci.yml)
 [![Gem Version](https://badge.fury.io/rb/dredger-iot.svg)](https://badge.fury.io/rb/dredger-iot)

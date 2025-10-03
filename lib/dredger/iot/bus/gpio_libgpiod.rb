@@ -6,21 +6,22 @@ module Dredger
   module IoT
     module Bus
       # GPIO backend using libgpiod ctxless helpers. Requires chip name and line offset.
-      class GPIO_Libgpiod
+      class GpioLibgpiod
         module Lib
           extend FFI::Library
+
           ffi_lib %w[gpiod libgpiod]
 
           # int gpiod_ctxless_get_value(const char *device, unsigned int offset, bool active_low,
           #                             const char *consumer);
-          attach_function :gpiod_ctxless_get_value, [:string, :uint, :bool, :string], :int
+          attach_function :gpiod_ctxless_get_value, %i[string uint bool string], :int
 
           # int gpiod_ctxless_set_value(const char *device, unsigned int offset, int value, bool active_low,
           #                             const char *consumer);
-          attach_function :gpiod_ctxless_set_value, [:string, :uint, :int, :bool, :string], :int
+          attach_function :gpiod_ctxless_set_value, %i[string uint int bool string], :int
         end
 
-        Consumer = 'dredger-iot'
+        CONSUMER = 'dredger-iot'
 
         def initialize(chip: 'gpiochip0', active_low: false)
           @chip = chip
@@ -30,7 +31,7 @@ module Dredger
         # pin can be Integer line offset, or a PinRef with :line
         def read(pin)
           line = line_from(pin)
-          val = Lib.gpiod_ctxless_get_value(@chip, line, @active_low, Consumer)
+          val = Lib.gpiod_ctxless_get_value(@chip, line, @active_low, CONSUMER)
           raise IOError, 'gpiod get failed' if val.negative?
 
           val
@@ -38,8 +39,8 @@ module Dredger
 
         def write(pin, value)
           line = line_from(pin)
-          int_val = value == 1 || value == true ? 1 : 0
-          rc = Lib.gpiod_ctxless_set_value(@chip, line, int_val, @active_low, Consumer)
+          int_val = [1, true].include?(value) ? 1 : 0
+          rc = Lib.gpiod_ctxless_set_value(@chip, line, int_val, @active_low, CONSUMER)
           raise IOError, 'gpiod set failed' if rc.negative?
 
           rc

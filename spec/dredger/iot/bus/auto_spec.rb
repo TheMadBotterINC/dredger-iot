@@ -3,14 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Dredger::IoT::Bus::Auto do
-  before do
-    @orig_gpio = ENV['DREDGER_IOT_GPIO_BACKEND']
-    @orig_i2c = ENV['DREDGER_IOT_I2C_BACKEND']
-  end
-
-  after do
-    ENV['DREDGER_IOT_GPIO_BACKEND'] = @orig_gpio
-    ENV['DREDGER_IOT_I2C_BACKEND'] = @orig_i2c
+  around do |example|
+    orig_gpio = ENV.fetch('DREDGER_IOT_GPIO_BACKEND', nil)
+    orig_i2c = ENV.fetch('DREDGER_IOT_I2C_BACKEND', nil)
+    example.run
+    ENV['DREDGER_IOT_GPIO_BACKEND'] = orig_gpio
+    ENV['DREDGER_IOT_I2C_BACKEND'] = orig_i2c
   end
 
   it 'returns simulation GPIO when requested' do
@@ -35,24 +33,33 @@ RSpec.describe Dredger::IoT::Bus::Auto do
 
   it 'auto-selects libgpiod when device present and backend available' do
     allow(File).to receive(:exist?).with('/dev/gpiochip0').and_return(true)
-    module Dredger; module IoT; module Bus; class GPIO_Libgpiod; def initialize(chip:, active_low:); end; end; end; end; end
+    stub_const('Dredger::IoT::Bus::GpioLibgpiod', Class.new do
+      def initialize(chip:, active_low:); end
+    end)
+    stub_const('Dredger::IoT::Bus::GPIOLabelAdapter', Class.new do
+      def initialize(backend:); end
+    end)
     allow(described_class).to receive(:safe_require).with('dredger/iot/bus/gpio_libgpiod').and_return(true)
+    allow(described_class).to receive(:safe_require).with('dredger/iot/bus/gpio_label_adapter').and_return(true)
+
     bus = described_class.gpio(prefer: :auto)
-    expect(bus.instance_variable_get(:@backend).class.name).to match(/GPIO_Libgpiod/)
-  ensure
-    Dredger::IoT::Bus.send(:remove_const, :GPIO_Libgpiod) if Dredger::IoT::Bus.const_defined?(:GPIO_Libgpiod)
+    expect(bus.instance_variable_get(:@backend)).to be_a(Dredger::IoT::Bus::GPIOLabelAdapter)
   end
 
   it 'uses libgpiod backend when explicitly requested and available' do
     ENV['DREDGER_IOT_GPIO_BACKEND'] = 'libgpiod'
-    # Define a dummy backend to avoid requiring actual library
-    module Dredger; module IoT; module Bus; class GPIO_Libgpiod; def initialize(chip:, active_low:); end; end; end; end; end
+    stub_const('Dredger::IoT::Bus::GpioLibgpiod', Class.new do
+      def initialize(chip:, active_low:); end
+    end)
+    stub_const('Dredger::IoT::Bus::GPIOLabelAdapter', Class.new do
+      def initialize(backend:); end
+    end)
     allow(described_class).to receive(:safe_require).with('dredger/iot/bus/gpio_libgpiod').and_return(true)
+    allow(described_class).to receive(:safe_require).with('dredger/iot/bus/gpio_label_adapter').and_return(true)
+
     bus = described_class.gpio
     backend = bus.instance_variable_get(:@backend)
-    expect(backend.class.name).to match(/GPIO_Libgpiod/)
-  ensure
-    Dredger::IoT::Bus.send(:remove_const, :GPIO_Libgpiod) if Dredger::IoT::Bus.const_defined?(:GPIO_Libgpiod)
+    expect(backend).to be_a(Dredger::IoT::Bus::GPIOLabelAdapter)
   end
 
   it 'falls back when prefer: :libgpiod is given but load fails' do
@@ -83,23 +90,25 @@ RSpec.describe Dredger::IoT::Bus::Auto do
 
   it 'auto-selects linux i2c when device present and backend available' do
     allow(File).to receive(:exist?).with('/dev/i2c-1').and_return(true)
-    module Dredger; module IoT; module Bus; class I2C_Linux; def initialize(bus_path:); end; end; end; end; end
+    stub_const('Dredger::IoT::Bus::I2cLinux', Class.new do
+      def initialize(bus_path:); end
+    end)
     allow(described_class).to receive(:safe_require).with('dredger/iot/bus/i2c_linux').and_return(true)
+
     bus = described_class.i2c(prefer: :auto, bus_path: '/dev/i2c-1')
-    expect(bus.instance_variable_get(:@backend).class.name).to match(/I2C_Linux/)
-  ensure
-    Dredger::IoT::Bus.send(:remove_const, :I2C_Linux) if Dredger::IoT::Bus.const_defined?(:I2C_Linux)
+    expect(bus.instance_variable_get(:@backend)).to be_a(Dredger::IoT::Bus::I2cLinux)
   end
 
   it 'uses linux i2c backend when explicitly requested and available' do
     ENV['DREDGER_IOT_I2C_BACKEND'] = 'linux'
-    module Dredger; module IoT; module Bus; class I2C_Linux; def initialize(bus_path:); end; end; end; end; end
+    stub_const('Dredger::IoT::Bus::I2cLinux', Class.new do
+      def initialize(bus_path:); end
+    end)
     allow(described_class).to receive(:safe_require).with('dredger/iot/bus/i2c_linux').and_return(true)
+
     bus = described_class.i2c(bus_path: '/dev/i2c-1')
     backend = bus.instance_variable_get(:@backend)
-    expect(backend.class.name).to match(/I2C_Linux/)
-  ensure
-    Dredger::IoT::Bus.send(:remove_const, :I2C_Linux) if Dredger::IoT::Bus.const_defined?(:I2C_Linux)
+    expect(backend).to be_a(Dredger::IoT::Bus::I2cLinux)
   end
 
   it 'falls back when prefer: :linux is given but load fails' do

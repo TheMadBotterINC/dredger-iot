@@ -22,3 +22,4 @@ RSpec.describe Dredger::IoT::Sensors::BaseSensor do
     expect(r.calibrated).to be(true)
   end
 end
+# EOF

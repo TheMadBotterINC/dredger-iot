@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'dredger/iot/bus/gpio_label_adapter'
 
 class DummyLibgpiodBackend
   attr_reader :last_pin, :last_op, :last_value
@@ -55,4 +56,29 @@ RSpec.describe Dredger::IoT::Bus::GPIOLabelAdapter do
     adapter = described_class.new(backend: backend)
     expect { adapter.write('UNKNOWN', 1) }.to raise_error(ArgumentError)
   end
+
+  it 'delegates set_direction to backend with resolved pin' do
+    backend = DummyLibgpiodBackend.new
+    adapter = described_class.new(backend: backend)
+    adapter.set_direction('P9_12', :out)
+    expect(backend.last_op).to eq([:set_direction, :out])
+    expect(backend.last_pin.chip).to eq(1)
+    expect(backend.last_pin.line).to eq(28)
+  end
+
+  it 'delegates read to backend with resolved pin' do
+    backend = DummyLibgpiodBackend.new
+    adapter = described_class.new(backend: backend)
+    val = adapter.read('P9_12')
+    expect(val).to eq(1)
+    expect(backend.last_op).to eq([:read])
+  end
+
+  it 'raises Unsupported pin format when mapper cannot resolve' do
+    backend = DummyLibgpiodBackend.new
+    mapper = Module.new # does not respond to :resolve_label_to_pinref
+    adapter = described_class.new(backend: backend, mapper: mapper)
+    expect { adapter.write('X1_1', 1) }.to raise_error(ArgumentError, 'Unsupported pin format')
+  end
 end
+# EOF

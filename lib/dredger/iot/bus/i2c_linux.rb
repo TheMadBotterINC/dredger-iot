@@ -6,11 +6,12 @@ module Dredger
   module IoT
     module Bus
       # Linux I2C backend using i2c-dev via ioctl
-      class I2C_Linux
+      class I2cLinux
         module LibC
           extend FFI::Library
+
           ffi_lib FFI::Library::LIBC
-          attach_function :ioctl, [:int, :ulong, :ulong], :int
+          attach_function :ioctl, %i[int ulong ulong], :int
         end
 
         I2C_SLAVE = 0x0703

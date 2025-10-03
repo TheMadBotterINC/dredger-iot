@@ -20,7 +20,10 @@ RSpec.describe Dredger::IoT::Bus::GPIO do
     bus = described_class.new(backend: sim)
 
     expect { bus.set_direction('P9_12', :bad) }.to raise_error(ArgumentError)
-    bus.set_direction('P9_12', :out)
-    expect { bus.write('P9_12', 2) }.to raise_error(ArgumentError)
+    bus.set_direction('P9_12', :in)
+    expect { bus.write('P9_12', 1) }.to raise_error(RuntimeError)
+
+    bus.set_direction('P9_14', :out)
+    expect { bus.write('P9_14', 2) }.to raise_error(ArgumentError)
   end
 end

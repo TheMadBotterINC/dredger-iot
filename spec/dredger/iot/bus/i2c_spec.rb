@@ -20,5 +20,7 @@ RSpec.describe Dredger::IoT::Bus::I2C do
 
     sim.seed(0x21, 0x05, [0x0A, 0x0B])
     expect(bus.read(0x21, 2, register: 0x05)).to eq([0x0A, 0x0B])
+
+    expect { bus.read(0x22, 0) }.to raise_error(ArgumentError)
   end
 end

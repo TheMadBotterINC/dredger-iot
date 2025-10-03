@@ -44,17 +44,43 @@ Gem::Specification.new do |spec|
 
   spec.post_install_message = <<~MSG
     
-    Thanks for installing dredger-iot! 🎉
+    ═══════════════════════════════════════════════════════════════════
+                                                                   
+                      _______________                              
+                     |  DREDGER-IoT  |                            
+                     |_______________|                            
+                    /|   ___     ___ |\                           
+                   / |  |___|   |___|| \                          
+                  /  |______________|  \                         
+             ====|========================|====                   
+            |    |    |-----------|     |    |                   
+            |    |____|           |_____|    |                   
+         ___|____|                         |____|___             
+    ~~~~{________|_________________________|________}~~~~~~~     
+      ~~      |  \\                     //  |         ~~~        
+              |   \\___________________//   |                    
+              |_____________________________|                    
+         ~~~       \\                 //          ~~~            
+                    \\_______________//                          
+    ═══════════════════════════════════════════════════════════════════
+           Hardware Integration for Embedded Linux v0.1.0
+    ═══════════════════════════════════════════════════════════════════
     
-    For hardware access, you may need to configure kernel modules and permissions.
-    See the Hardware Setup guide: https://github.com/TheMadBotterINC/dredger-iot#hardware-setup
+    🎉 Thanks for installing!
     
-    Quick start:
-      require 'dredger/iot'
-      gpio = Dredger::IoT::Bus::Auto.gpio
-      i2c = Dredger::IoT::Bus::Auto.i2c
+    📚 Hardware Setup (kernel modules & permissions):
+       https://github.com/TheMadBotterINC/dredger-iot#hardware-setup
     
-    Documentation: https://github.com/TheMadBotterINC/dredger-iot/blob/master/README.md
+    🚀 Quick Start:
+       require 'dredger/iot'
+       gpio = Dredger::IoT::Bus::Auto.gpio
+       i2c  = Dredger::IoT::Bus::Auto.i2c
+    
+    💡 Supported Sensors:
+       DHT22, BME280, DS18B20, BMP180, MCP9808
+    
+    📖 Full Documentation:
+       https://github.com/TheMadBotterINC/dredger-iot
     
   MSG
 end

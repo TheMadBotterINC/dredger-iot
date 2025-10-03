@@ -15,9 +15,9 @@ module Dredger
         def readings
           m = @provider.read_measurements(@i2c_addr)
           [
-            reading(sensor_type: "temperature", value: m[:temperature_c], unit: "celsius"),
-            reading(sensor_type: "humidity", value: m[:humidity], unit: "%"),
-            reading(sensor_type: "pressure", value: m[:pressure_kpa], unit: "kPa")
+            reading(sensor_type: 'temperature', value: m[:temperature_c], unit: 'celsius'),
+            reading(sensor_type: 'humidity', value: m[:humidity], unit: '%'),
+            reading(sensor_type: 'pressure', value: m[:pressure_kpa], unit: 'kPa')
           ]
         end
       end

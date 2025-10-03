@@ -16,8 +16,8 @@ module Dredger
         def readings
           sample = @provider.sample(@pin_label)
           [
-            reading(sensor_type: "humidity", value: sample[:humidity], unit: "%"),
-            reading(sensor_type: "temperature", value: sample[:temperature_c], unit: "celsius")
+            reading(sensor_type: 'humidity', value: sample[:humidity], unit: '%'),
+            reading(sensor_type: 'temperature', value: sample[:temperature_c], unit: 'celsius')
           ]
         end
       end

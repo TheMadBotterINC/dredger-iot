@@ -5,6 +5,7 @@ AllCops:
     - 'bin/*'
     - 'pkg/**/*'
     - 'tmp/**/*'
+  SuggestExtensions: false
 
 plugins:
   - rubocop-rspec
@@ -30,8 +31,6 @@ RSpec/MultipleExpectations:
 RSpec/ExampleLength:
   Enabled: false
 
-AllCops:
-  SuggestExtensions: false
 
 RSpec/SpecFilePathFormat:
   CustomTransform:

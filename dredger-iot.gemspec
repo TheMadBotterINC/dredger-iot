@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['opensource@themadbotter.com']
 
   spec.summary       = 'Generic hardware integration for embedded Linux (GPIO, I2C) with sensor drivers.'
-  spec.description   = 'FFI-based GPIO and I2C access with Beaglebone pin mapping, sensor drivers (DHT22, BME280), and simple scheduling utilities.'
+  spec.description   = 'FFI GPIO/I2C access for Beaglebone/Linux with pluggable sensors (e.g., DHT22, BME280) and simple scheduling.'
   spec.homepage      = 'https://github.com/TheMadBotterINC/dredger-iot'
   spec.license       = 'MIT'
 

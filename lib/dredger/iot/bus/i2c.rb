@@ -26,9 +26,7 @@ module Dredger
           end
 
           def write(addr, bytes, register: nil)
-            unless bytes.is_a?(Array) && bytes.all?(Integer)
-              raise ArgumentError, 'bytes must be an Array of integers'
-            end
+            raise ArgumentError, 'bytes must be an Array of integers' unless bytes.is_a?(Array) && bytes.all?(Integer)
 
             if register.nil?
               # Treat as sequential write starting at register 0
@@ -36,7 +34,7 @@ module Dredger
             else
               bytes.each_with_index { |b, i| @devices[addr][register + i] = b & 0xFF }
             end
-            true
+            bytes.length
           end
 
           def read(addr, length, register: nil)

@@ -2,3 +2,5 @@
 
 require_relative 'bus/gpio'
 require_relative 'bus/i2c'
+require_relative 'bus/gpio_libgpiod'
+require_relative 'bus/i2c_linux'

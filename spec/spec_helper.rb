@@ -11,6 +11,8 @@ SimpleCov.start do
   add_filter %r{/lib/dredger/iot/bus\.rb$}
   add_filter %r{/lib/dredger/iot/pins\.rb$}
   add_filter %r{/lib/dredger/iot/sensors\.rb$}
+  add_filter %r{/lib/dredger/iot/bus/gpio_libgpiod\.rb$}
+  add_filter %r{/lib/dredger/iot/bus/i2c_linux\.rb$}
 end
 
 require 'bundler/setup'

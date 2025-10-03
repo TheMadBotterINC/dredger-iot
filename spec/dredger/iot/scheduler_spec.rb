@@ -14,9 +14,9 @@ RSpec.describe Dredger::IoT::Scheduler do
 
     it 'validates arguments' do
       expect { described_class.periodic_with_jitter(base_interval: 0, jitter_ratio: 0.1) }.to raise_error(ArgumentError)
-      expect {
+      expect do
         described_class.periodic_with_jitter(base_interval: 1, jitter_ratio: -0.1)
-      }.to raise_error(ArgumentError)
+      end.to raise_error(ArgumentError)
       expect { described_class.periodic_with_jitter(base_interval: 1, jitter_ratio: 1.1) }.to raise_error(ArgumentError)
     end
   end

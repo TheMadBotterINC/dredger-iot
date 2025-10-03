@@ -17,7 +17,9 @@ Gem::Specification.new do |spec|
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = spec.homepage
-  spec.metadata['changelog_uri'] = 'https://github.com/TheMadBotterINC/dredger-iot/releases'
+  spec.metadata['changelog_uri'] = 'https://github.com/TheMadBotterINC/dredger-iot/blob/master/CHANGELOG.md'
+  spec.metadata['bug_tracker_uri'] = 'https://github.com/TheMadBotterINC/dredger-iot/issues'
+  spec.metadata['documentation_uri'] = 'https://github.com/TheMadBotterINC/dredger-iot/blob/master/README.md'
   spec.metadata['rubygems_mfa_required'] = 'true'
 
   spec.files = Dir.chdir(__dir__) do

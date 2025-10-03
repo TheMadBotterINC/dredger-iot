@@ -9,4 +9,9 @@ RSpec.describe Dredger::IoT::Pins::Beaglebone do
     expect(pin.to_s).to eq('P9_12')
     expect { described_class.resolve('P10_99') }.to raise_error(ArgumentError)
   end
+
+  it 'formats PinRef with chip:line when present' do
+    pref = described_class::PinRef.new(label: 'P9_12', chip: 0, line: 1)
+    expect(pref.to_s).to eq('P9_12(chip0:1)')
+  end
 end

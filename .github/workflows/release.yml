@@ -1,0 +1,46 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    name: Build and publish gem
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Run tests
+        run: bundle exec rspec
+
+      - name: Run RuboCop
+        run: bundle exec rubocop --no-server
+
+      - name: Build gem
+        run: gem build dredger-iot.gemspec
+
+      - name: Publish to RubyGems
+        if: success()
+        env:
+          GEM_HOST_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
+        run: |
+          mkdir -p ~/.gem
+          echo ":rubygems_api_key: ${GEM_HOST_API_KEY}" > ~/.gem/credentials
+          chmod 0600 ~/.gem/credentials
+          gem push *.gem
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: '*.gem'
+          generate_release_notes: true

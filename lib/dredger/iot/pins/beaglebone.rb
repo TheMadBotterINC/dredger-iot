@@ -4,7 +4,8 @@ module Dredger
   module IoT
     module Pins
       # Beaglebone header label mapping placeholder.
-      # Provides validation and PinRef objects; actual chip:line resolution is done at runtime by the agent or a backend.
+# Provides validation and PinRef objects.
+# Chip:line resolution is done at runtime by the agent or a backend.
       class Beaglebone
         PinRef = Struct.new(:label, :chip, :line, keyword_init: true) do
           def to_s

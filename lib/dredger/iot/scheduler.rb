@@ -9,8 +9,8 @@ module Dredger
       # base_interval: Float seconds
       # jitter_ratio: 0.0..1.0 (fraction of base interval)
       def periodic_with_jitter(base_interval:, jitter_ratio: 0.1)
-        raise ArgumentError, "base_interval must be > 0" unless base_interval.positive?
-        raise ArgumentError, "jitter_ratio must be between 0.0 and 1.0" unless jitter_ratio.between?(0.0, 1.0)
+        raise ArgumentError, 'base_interval must be > 0' unless base_interval.positive?
+        raise ArgumentError, 'jitter_ratio must be between 0.0 and 1.0' unless jitter_ratio.between?(0.0, 1.0)
 
         Enumerator.new do |y|
           loop do
@@ -22,9 +22,9 @@ module Dredger
 
       # Exponential backoff enumerator with max backoff and max attempts (or infinite if nil)
       def exponential_backoff(initial:, factor: 2.0, max: 60.0, attempts: nil)
-        raise ArgumentError, "initial must be > 0" unless initial.positive?
-        raise ArgumentError, "factor must be >= 1.0" unless factor >= 1.0
-        raise ArgumentError, "max must be >= initial" unless max >= initial
+        raise ArgumentError, 'initial must be > 0' unless initial.positive?
+        raise ArgumentError, 'factor must be >= 1.0' unless factor >= 1.0
+        raise ArgumentError, 'max must be >= initial' unless max >= initial
 
         Enumerator.new do |y|
           i = 0

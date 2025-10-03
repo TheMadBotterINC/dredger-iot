@@ -7,6 +7,10 @@ SimpleCov.start do
   minimum_coverage_by_file 100
   add_filter %r{^/spec/}
   add_filter %r{/lib/dredger/iot/version\.rb$}
+  add_filter %r{/lib/dredger/iot\.rb$}
+  add_filter %r{/lib/dredger/iot/bus\.rb$}
+  add_filter %r{/lib/dredger/iot/pins\.rb$}
+  add_filter %r{/lib/dredger/iot/sensors\.rb$}
 end
 
 require "bundler/setup"

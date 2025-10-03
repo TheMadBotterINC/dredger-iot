@@ -29,16 +29,16 @@ module Dredger
           end
 
           def set_direction(pin_label, direction)
-            raise ArgumentError, "direction must be :in or :out" unless %i[in out].include?(direction)
+            raise ArgumentError, 'direction must be :in or :out' unless %i[in out].include?(direction)
 
             @directions[pin_label] = direction
           end
 
           def write(pin_label, value)
-raise ArgumentError, "value must be 0 or 1" unless [ 0, 1, true, false ].include?(value)
-            raise "pin not configured for :out" unless @directions[pin_label] == :out
+            raise ArgumentError, 'value must be 0 or 1' unless [0, 1, true, false].include?(value)
+            raise 'pin not configured for :out' unless @directions[pin_label] == :out
 
-            @values[pin_label] = value == 1 || value == true ? 1 : 0
+            @values[pin_label] = [1, true].include?(value) ? 1 : 0
           end
 
           def read(pin_label)
@@ -48,9 +48,9 @@ raise ArgumentError, "value must be 0 or 1" unless [ 0, 1, true, false ].include
 
           # Helpers for test injection
           def inject_input(pin_label, value)
-            raise ArgumentError, "value must be 0 or 1" unless [0, 1, true, false].include?(value)
+            raise ArgumentError, 'value must be 0 or 1' unless [0, 1, true, false].include?(value)
 
-            @values[pin_label] = value == 1 || value == true ? 1 : 0
+            @values[pin_label] = [1, true].include?(value) ? 1 : 0
           end
         end
       end

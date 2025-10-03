@@ -14,7 +14,9 @@ module Dredger
           when :libgpiod
             begin
               safe_require('dredger/iot/bus/gpio_libgpiod')
-              backend = Dredger::IoT::Bus::GPIO_Libgpiod.new(chip: chip, active_low: active_low)
+              safe_require('dredger/iot/bus/gpio_label_adapter')
+              raw = Dredger::IoT::Bus::GPIO_Libgpiod.new(chip: chip, active_low: active_low)
+              backend = Dredger::IoT::Bus::GPIOLabelAdapter.new(backend: raw)
               return Dredger::IoT::Bus::GPIO.new(backend: backend)
             rescue LoadError
               return Dredger::IoT::Bus::GPIO.new
@@ -23,7 +25,9 @@ module Dredger
             if File.exist?('/dev/gpiochip0')
               begin
                 safe_require('dredger/iot/bus/gpio_libgpiod')
-                backend = Dredger::IoT::Bus::GPIO_Libgpiod.new(chip: chip, active_low: active_low)
+                safe_require('dredger/iot/bus/gpio_label_adapter')
+                raw = Dredger::IoT::Bus::GPIO_Libgpiod.new(chip: chip, active_low: active_low)
+                backend = Dredger::IoT::Bus::GPIOLabelAdapter.new(backend: raw)
                 return Dredger::IoT::Bus::GPIO.new(backend: backend)
               rescue LoadError
                 # fallthrough

@@ -14,4 +14,10 @@ RSpec.describe Dredger::IoT::Pins::Beaglebone do
     pref = described_class::PinRef.new(label: 'P9_12', chip: 0, line: 1)
     expect(pref.to_s).to eq('P9_12(chip0:1)')
   end
+
+  it 'resolves known labels to chip:line via mapping' do
+    pinref = described_class.resolve_label_to_pinref('P9_12')
+    expect(pinref.chip).to eq(1)
+    expect(pinref.line).to eq(28)
+  end
 end

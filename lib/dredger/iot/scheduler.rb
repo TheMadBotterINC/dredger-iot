@@ -14,8 +14,8 @@ module Dredger
 
         Enumerator.new do |y|
           loop do
-            jitter = (rand * 2 - 1) * (base_interval * jitter_ratio)
-            y << [ base_interval + jitter, 0.0 ].max
+            jitter = ((rand * 2) - 1) * (base_interval * jitter_ratio)
+            y << [base_interval + jitter, 0.0].max
           end
         end
       end
@@ -31,8 +31,9 @@ module Dredger
           current = initial
           loop do
             break if attempts && i >= attempts
+
             y << current
-            current = [ current * factor, max ].min
+            current = [current * factor, max].min
             i += 1
           end
         end

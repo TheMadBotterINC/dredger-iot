@@ -9,12 +9,16 @@ AllCops:
 plugins:
   - rubocop-rspec
   - rubocop-performance
+  - rubocop-rake
 
 Layout/LineLength:
   Max: 120
 
 Style/Documentation:
   Enabled: false
+
+Metrics/MethodLength:
+  Max: 15
 
 RSpec:
   Language:
@@ -26,8 +30,15 @@ RSpec/MultipleExpectations:
 RSpec/ExampleLength:
   Enabled: false
 
+AllCops:
+  SuggestExtensions: false
+
 RSpec/SpecFilePathFormat:
   CustomTransform:
     IoT: iot
+    I2C: i2c
+    GPIO: gpio
+    BME280: bme280
+    DHT22: dht22
 # Layout/SpaceInsideArrayLiteralBrackets:
 #   Enabled: false

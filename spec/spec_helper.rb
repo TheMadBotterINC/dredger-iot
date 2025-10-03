@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "simplecov"
+require 'simplecov'
 SimpleCov.start do
   enable_coverage :branch
   minimum_coverage 100
@@ -13,8 +13,8 @@ SimpleCov.start do
   add_filter %r{/lib/dredger/iot/sensors\.rb$}
 end
 
-require "bundler/setup"
-require "dredger/iot"
+require 'bundler/setup'
+require 'dredger/iot'
 
 RSpec.configure do |config|
   config.expect_with :rspec do |c|

@@ -61,7 +61,7 @@ RSpec.describe Dredger::IoT::Bus::GPIOLabelAdapter do
     backend = DummyLibgpiodBackend.new
     adapter = described_class.new(backend: backend)
     adapter.set_direction('P9_12', :out)
-    expect(backend.last_op).to eq([:set_direction, :out])
+    expect(backend.last_op).to eq(%i[set_direction out])
     expect(backend.last_pin.chip).to eq(1)
     expect(backend.last_pin.line).to eq(28)
   end

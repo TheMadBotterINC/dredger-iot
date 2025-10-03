@@ -2,4 +2,6 @@
 
 require_relative 'sensors/base_sensor'
 require_relative 'sensors/dht22'
+require_relative 'sensors/dht22_provider'
 require_relative 'sensors/bme280'
+require_relative 'sensors/bme280_provider'

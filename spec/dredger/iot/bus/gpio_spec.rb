@@ -10,6 +10,9 @@ RSpec.describe Dredger::IoT::Bus::GPIO do
     sim.inject_input('P9_12', 1)
     expect(bus.read('P9_12')).to eq(1)
 
+    # Default for uninitialized pins is 0
+    expect(bus.read('P8_01')).to eq(0)
+
     bus.set_direction('P9_14', :out)
     bus.write('P9_14', 1)
     expect(bus.read('P9_14')).to eq(1)

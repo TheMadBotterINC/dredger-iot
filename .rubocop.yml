@@ -6,7 +6,7 @@ AllCops:
     - 'pkg/**/*'
     - 'tmp/**/*'
 
-require:
+plugins:
   - rubocop-rspec
   - rubocop-performance
 
@@ -20,11 +20,14 @@ RSpec:
   Language:
     Expect: expect
 
-# Omakase Ruby styling for Rails
-inherit_gem: { rubocop-rails-omakase: rubocop.yml }
+RSpec/MultipleExpectations:
+  Enabled: false
 
-# Overwrite or add rules to create your own house style
-#
-# # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/SpecFilePathFormat:
+  CustomTransform:
+    IoT: iot
 # Layout/SpaceInsideArrayLiteralBrackets:
 #   Enabled: false

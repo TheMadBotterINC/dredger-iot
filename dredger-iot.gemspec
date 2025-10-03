@@ -3,8 +3,8 @@
 Gem::Specification.new do |spec|
   spec.name          = "dredger-iot"
   spec.version       = File.read(File.join(__dir__, "lib", "dredger", "iot", "version.rb")).match(/VERSION\s*=\s*"([^"]+)"/)[1]
-  spec.authors       = ["The Mad Botter INC"]
-  spec.email         = ["opensource@themadbotter.com"]
+  spec.authors       = [ "The Mad Botter INC" ]
+  spec.email         = [ "opensource@themadbotter.com" ]
 
   spec.summary       = "Generic hardware integration for embedded Linux (GPIO, I2C) with sensor drivers."
   spec.description   = "FFI-based GPIO and I2C access with Beaglebone pin mapping, sensor drivers (DHT22, BME280), and simple scheduling utilities."
@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   end
   spec.bindir        = "exe"
   spec.executables   = []
-  spec.require_paths = ["lib"]
+  spec.require_paths = [ "lib" ]
 
   spec.add_dependency "ffi", ">= 1.15"
 
@@ -33,4 +33,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rubocop", ">= 1.63"
   spec.add_development_dependency "rubocop-rspec", ">= 3.0"
   spec.add_development_dependency "rubocop-performance", ">= 1.20"
+  spec.add_development_dependency "rubocop-rails-omakase", ">= 1.0"
 end

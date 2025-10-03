@@ -22,7 +22,7 @@ RSpec.describe Dredger::IoT::Scheduler do
   describe ".exponential_backoff" do
     it "grows up to the max and stops at attempts" do
       enum = described_class.exponential_backoff(initial: 1.0, factor: 2.0, max: 5.0, attempts: 5)
-      expect(enum.to_a).to eq([1.0, 2.0, 4.0, 5.0, 5.0])
+expect(enum.to_a).to eq([ 1.0, 2.0, 4.0, 5.0, 5.0 ])
     end
 
     it "validates arguments" do

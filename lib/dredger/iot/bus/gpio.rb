@@ -35,7 +35,7 @@ module Dredger
           end
 
           def write(pin_label, value)
-            raise ArgumentError, "value must be 0 or 1" unless [0, 1, true, false].include?(value)
+raise ArgumentError, "value must be 0 or 1" unless [ 0, 1, true, false ].include?(value)
             raise "pin not configured for :out" unless @directions[pin_label] == :out
 
             @values[pin_label] = value == 1 || value == true ? 1 : 0

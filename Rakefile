@@ -2,6 +2,10 @@
 
 require "rake/testtask"
 require "bundler/gem_tasks"
+require "rspec/core/rake_task"
+require "rubocop/rake_task"
 
-# Default task will be updated later to run rubocop + rspec
-task default: []
+RSpec::Core::RakeTask.new(:spec)
+RuboCop::RakeTask.new(:rubocop)
+
+task default: [:rubocop, :spec]

@@ -1,3 +1,25 @@
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.3
+  Exclude:
+    - 'bin/*'
+    - 'pkg/**/*'
+    - 'tmp/**/*'
+
+require:
+  - rubocop-rspec
+  - rubocop-performance
+
+Layout/LineLength:
+  Max: 120
+
+Style/Documentation:
+  Enabled: false
+
+RSpec:
+  Language:
+    Expect: expect
+
 # Omakase Ruby styling for Rails
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 

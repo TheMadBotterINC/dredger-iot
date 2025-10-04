@@ -71,7 +71,7 @@ puts "Monitoring #{sensors.size} sensors"
 base_interval = (ENV['DREDGER_IOT_EXAMPLE_INTERVAL'] || '60.0').to_f
 jitter_ratio  = (ENV['DREDGER_IOT_EXAMPLE_JITTER'] || '0.1').to_f
 max_cycles    = ENV['DREDGER_IOT_EXAMPLE_CYCLES']&.to_i
-max_cycles    = nil if max_cycles == 0
+max_cycles    = nil if max_cycles&.zero?
 
 puts "Poll interval: #{base_interval} seconds (±#{(jitter_ratio * 100).round}% jitter)"
 puts 'Press Ctrl+C to stop'
@@ -138,10 +138,6 @@ begin
   end
 rescue Interrupt
   puts "\n\nShutting down gracefully..."
-ensure
-  # Clean up resources
-  # gpio.close
-  # i2c.close
 end
 
 puts 'Monitor stopped.'

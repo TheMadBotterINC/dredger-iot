@@ -1,10 +1,11 @@
 AllCops:
   NewCops: enable
-  TargetRubyVersion: 3.3
+  TargetRubyVersion: 3.2
   Exclude:
     - 'bin/*'
     - 'pkg/**/*'
     - 'tmp/**/*'
+    - 'vendor/**/*'
   SuggestExtensions: false
 
 plugins:

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dredger-iot (0.1.1)
+    dredger-iot (0.1.2)
       ffi (~> 1.15)
 
 GEM

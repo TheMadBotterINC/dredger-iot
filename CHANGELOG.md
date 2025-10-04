@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2025-10-04
+
+### Fixed
+- Update CI workflows to use upload-artifact@v4 (v3 deprecated)
+- Exclude vendor directory from RuboCop to prevent scanning bundled gems
+- Fix Gemfile.lock synchronization with semantic FFI versioning
+- Resolve all RuboCop violations with auto-corrections
+- Add sensor name transforms for DS18B20, BMP180, MCP9808
+
+### Changed
+- Drop Ruby 3.1 support, require Ruby >= 3.2
+- Update RuboCop target Ruby version to 3.2
+- Increase MethodLength cop limit to 20 for scheduler methods
+- Disable metric cops for provider implementations and examples
+
 ## [0.1.0] - 2025-10-03
 
 ### Added
@@ -29,5 +44,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - RuboCop configuration and compliance
 - Comprehensive documentation and usage examples
 
-[Unreleased]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/TheMadBotterINC/dredger-iot/releases/tag/v0.1.0

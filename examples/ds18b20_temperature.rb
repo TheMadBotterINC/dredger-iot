@@ -51,14 +51,14 @@ begin
 
   loop do
     reading = sensor.readings.first
-    
+
     temp_c = reading.value.round(2)
-    temp_f = (temp_c * 9.0 / 5.0 + 32).round(2)
-    
+    temp_f = ((temp_c * 9.0 / 5.0) + 32).round(2)
+
     timestamp = reading.timestamp.strftime('%H:%M:%S')
-    
+
     puts "[#{timestamp}] Temperature: #{temp_c}°C (#{temp_f}°F)"
-    
+
     sleep 2
   end
 rescue Interrupt

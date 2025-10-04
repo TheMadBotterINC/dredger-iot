@@ -28,10 +28,10 @@ puts
 # Take 5 readings with delays
 5.times do |i|
   puts "Reading #{i + 1}:"
-  
+
   begin
     readings = sensor.readings
-    
+
     readings.each do |reading|
       puts "  #{reading.sensor_type.capitalize}: #{reading.value} #{reading.unit}"
       puts "    Timestamp: #{reading.timestamp}"
@@ -39,7 +39,7 @@ puts
   rescue StandardError => e
     puts "  Error: #{e.message}"
   end
-  
+
   puts
   sleep 3 # DHT22 requires ~2 seconds between reads
 end

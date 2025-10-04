@@ -15,7 +15,7 @@ pin = 'P9_12'
 gpio.set_direction(pin, :out)
 
 puts "Blinking LED on pin #{pin}..."
-puts "Press Ctrl+C to stop"
+puts 'Press Ctrl+C to stop'
 
 # Blink LED 10 times
 begin

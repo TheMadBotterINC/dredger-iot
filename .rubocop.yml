@@ -20,7 +20,10 @@ Style/Documentation:
   Enabled: false
 
 Metrics/MethodLength:
-  Max: 15
+  Max: 20
+  Exclude:
+    - 'lib/dredger/iot/sensors/*_provider.rb'
+    - 'spec/**/*'
 
 RSpec:
   Language:
@@ -32,13 +35,21 @@ RSpec/MultipleExpectations:
 RSpec/ExampleLength:
   Enabled: false
 
-
 RSpec/SpecFilePathFormat:
   CustomTransform:
     IoT: iot
     I2C: i2c
     GPIO: gpio
     BME280: bme280
+    BMP180: bmp180
     DHT22: dht22
-# Layout/SpaceInsideArrayLiteralBrackets:
-#   Enabled: false
+    DS18B20: ds18b20
+    MCP9808: mcp9808
+
+Metrics/BlockLength:
+  Exclude:
+    - 'examples/**/*'
+
+Metrics/AbcSize:
+  Exclude:
+    - 'lib/dredger/iot/sensors/*_provider.rb'

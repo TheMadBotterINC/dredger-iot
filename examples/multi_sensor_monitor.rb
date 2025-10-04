@@ -29,7 +29,7 @@ sensors = [
 puts 'Multi-Sensor Environmental Monitor'
 puts '=' * 60
 puts "Monitoring #{sensors.size} sensors"
-puts "Poll interval: 60 seconds (±10% jitter)"
+puts 'Poll interval: 60 seconds (±10% jitter)'
 puts 'Press Ctrl+C to stop'
 puts '=' * 60
 puts
@@ -45,25 +45,25 @@ begin
   scheduler.each_with_index do |interval, cycle|
     puts "\n[Cycle #{cycle + 1}] Waiting #{interval.round(2)}s..."
     sleep interval
-    
+
     timestamp = Time.now.iso8601
     puts "\n#{timestamp}"
     puts '-' * 60
-    
+
     sensors.each do |sensor|
       location = sensor.metadata[:location]
       puts "\n#{location.upcase}:"
-      
+
       begin
         readings = sensor.readings
-        
+
         readings.each do |reading|
           value = reading.value.is_a?(Float) ? reading.value.round(2) : reading.value
           puts "  #{reading.sensor_type}: #{value} #{reading.unit}"
         end
-        
+
         # Optional: Log to JSON file
-        log_entry = {
+        {
           timestamp: timestamp,
           location: location,
           readings: readings.map do |r|
@@ -74,17 +74,16 @@ begin
             }
           end
         }
-        
+
         # Uncomment to enable JSON logging:
         # File.open('sensor_log.json', 'a') do |f|
         #   f.puts log_entry.to_json
         # end
-        
       rescue StandardError => e
         puts "  ERROR: #{e.message}"
       end
     end
-    
+
     puts '-' * 60
   end
 rescue Interrupt

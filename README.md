@@ -22,7 +22,7 @@
 [![CI](https://github.com/TheMadBotterINC/dredger-iot/workflows/CI/badge.svg)](https://github.com/TheMadBotterINC/dredger-iot/actions/workflows/ci.yml)
 [![Gem Version](https://badge.fury.io/rb/dredger-iot.svg)](https://badge.fury.io/rb/dredger-iot)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Ruby](https://img.shields.io/badge/ruby-%3E%3D%203.1-ruby.svg)](https://www.ruby-lang.org/)
+[![Ruby](https://img.shields.io/badge/ruby-%3E%3D%203.2-ruby.svg)](https://www.ruby-lang.org/)
 
 A small, FOSS Ruby library for hardware access on embedded Linux (Beaglebone Black, etc.).
 

@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/TheMadBotterINC/dredger-iot'
   spec.license       = 'MIT'
 
-  spec.required_ruby_version = '>= 3.1'
+  spec.required_ruby_version = '>= 3.2'
 
   # Platform information
   # Note: Gem will install on any platform, but hardware backends require Linux

@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2025-10-04
+
+### Added
+- Developer tools and community infrastructure.
+
+### Changed
+- Examples: seed BME280 calibration and sample data for I2C simulation.
+- Examples: allow interval/cycles override via env for fast simulation runs.
+
 ## [0.1.1] - 2025-10-04
 
 ### Fixed
@@ -44,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - RuboCop configuration and compliance
 - Comprehensive documentation and usage examples
 
-[Unreleased]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/TheMadBotterINC/dredger-iot/releases/tag/v0.1.0

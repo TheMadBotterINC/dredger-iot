@@ -66,15 +66,22 @@ sensors = [
 puts 'Multi-Sensor Environmental Monitor'
 puts '=' * 60
 puts "Monitoring #{sensors.size} sensors"
-puts 'Poll interval: 60 seconds (±10% jitter)'
+
+# Allow quick demo runs via environment variables
+base_interval = (ENV['DREDGER_IOT_EXAMPLE_INTERVAL'] || '60.0').to_f
+jitter_ratio  = (ENV['DREDGER_IOT_EXAMPLE_JITTER'] || '0.1').to_f
+max_cycles    = ENV['DREDGER_IOT_EXAMPLE_CYCLES']&.to_i
+max_cycles    = nil if max_cycles == 0
+
+puts "Poll interval: #{base_interval} seconds (±#{(jitter_ratio * 100).round}% jitter)"
 puts 'Press Ctrl+C to stop'
 puts '=' * 60
 puts
 
 # Create scheduler with jitter to avoid synchronized polling spikes
 scheduler = Dredger::IoT::Scheduler.periodic_with_jitter(
-  base_interval: 60.0,
-  jitter_ratio: 0.1
+  base_interval: base_interval,
+  jitter_ratio: jitter_ratio
 )
 
 # Poll sensors continuously
@@ -125,6 +132,9 @@ begin
     end
 
     puts '-' * 60
+
+    # Stop after configured number of cycles (if provided)
+    break if max_cycles && (cycle + 1) >= max_cycles
   end
 rescue Interrupt
   puts "\n\nShutting down gracefully..."

@@ -1,0 +1,264 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'bundler/setup'
+require 'dredger/iot'
+require 'optparse'
+require 'json'
+
+# Dredger CLI - Quick sensor testing and debugging tool
+class DredgerCLI
+  def initialize
+    @options = {
+      backend: 'auto',
+      format: 'text',
+      interval: nil
+    }
+  end
+
+  def run(args)
+    parser = build_parser
+    parser.parse!(args)
+
+    command = args.shift
+    case command
+    when 'list-sensors'
+      list_sensors
+    when 'read'
+      read_sensor(args)
+    when 'test-gpio'
+      test_gpio(args)
+    when 'test-i2c'
+      test_i2c
+    when 'info'
+      show_info
+    else
+      puts parser
+      exit 1
+    end
+  rescue StandardError => e
+    puts "Error: #{e.message}"
+    puts e.backtrace if ENV['DEBUG']
+    exit 1
+  end
+
+  private
+
+  def build_parser
+    OptionParser.new do |opts|
+      opts.banner = 'Usage: dredger [options] COMMAND [args]'
+      opts.separator ''
+      opts.separator 'Commands:'
+      opts.separator '  list-sensors           List available sensor types'
+      opts.separator '  read SENSOR [OPTIONS]  Read from a sensor'
+      opts.separator '  test-gpio PIN          Test GPIO pin'
+      opts.separator '  test-i2c               Scan I2C bus'
+      opts.separator '  info                   Show system information'
+      opts.separator ''
+      opts.separator 'Options:'
+
+      opts.on('--backend BACKEND', 'Backend: auto, simulation, hardware') do |b|
+        @options[:backend] = b
+      end
+
+      opts.on('--format FORMAT', 'Output format: text, json') do |f|
+        @options[:format] = f
+      end
+
+      opts.on('--interval SECONDS', Float, 'Continuous reading interval') do |i|
+        @options[:interval] = i
+      end
+
+      opts.on('-h', '--help', 'Show this help') do
+        puts opts
+        exit
+      end
+
+      opts.on('-v', '--version', 'Show version') do
+        puts "dredger-iot #{Dredger::IoT::VERSION}"
+        exit
+      end
+    end
+  end
+
+  def list_sensors
+    sensors = {
+      'dht22' => 'DHT22 - Temperature/Humidity (GPIO)',
+      'bme280' => 'BME280 - Temperature/Humidity/Pressure (I2C)',
+      'ds18b20' => 'DS18B20 - Waterproof Temperature (1-Wire)',
+      'bmp180' => 'BMP180 - Barometric Pressure/Temperature (I2C)',
+      'mcp9808' => 'MCP9808 - High-Accuracy Temperature (I2C)'
+    }
+
+    puts 'Available Sensors:'
+    puts
+    sensors.each do |key, desc|
+      puts "  #{key.ljust(10)} - #{desc}"
+    end
+  end
+
+  def read_sensor(args)
+    sensor_type = args.shift
+    unless sensor_type
+      puts 'Error: Sensor type required'
+      puts 'Run "dredger list-sensors" to see available sensors'
+      exit 1
+    end
+
+    setup_backends
+    sensor = create_sensor(sensor_type, args)
+
+    if @options[:interval]
+      read_continuous(sensor)
+    else
+      read_once(sensor)
+    end
+  end
+
+  def create_sensor(type, args)
+    case type
+    when 'dht22'
+      pin = args.shift || 'P9_12'
+      gpio = Dredger::IoT::Bus::Auto.gpio
+      provider = Dredger::IoT::Sensors::DHT22Provider.new(gpio_bus: gpio)
+      Dredger::IoT::Sensors::DHT22.new(pin_label: pin, provider: provider)
+    when 'bme280'
+      addr = (args.shift || '0x76').to_i(16)
+      i2c = Dredger::IoT::Bus::Auto.i2c
+      provider = Dredger::IoT::Sensors::BME280Provider.new(i2c_bus: i2c)
+      Dredger::IoT::Sensors::BME280.new(i2c_addr: addr, provider: provider)
+    when 'ds18b20'
+      provider = Dredger::IoT::Sensors::DS18B20Provider.new
+      devices = provider.list_devices
+      device_id = args.shift || devices.first
+      unless device_id
+        puts 'Error: No DS18B20 devices found'
+        exit 1
+      end
+      Dredger::IoT::Sensors::DS18B20.new(device_id: device_id, provider: provider)
+    else
+      puts "Error: Unknown sensor type '#{type}'"
+      exit 1
+    end
+  end
+
+  def read_once(sensor)
+    readings = sensor.readings
+    output_readings(readings)
+  end
+
+  def read_continuous(sensor)
+    puts "Reading every #{@options[:interval]} seconds (Ctrl+C to stop)..."
+    puts
+
+    loop do
+      readings = sensor.readings
+      output_readings(readings)
+      puts if @options[:format] == 'text'
+      sleep @options[:interval]
+    end
+  rescue Interrupt
+    puts "\nStopped"
+  end
+
+  def output_readings(readings)
+    case @options[:format]
+    when 'json'
+      data = readings.map do |r|
+        {
+          sensor_type: r.sensor_type,
+          value: r.value,
+          unit: r.unit,
+          timestamp: r.timestamp.iso8601
+        }
+      end
+      puts JSON.pretty_generate(data)
+    else
+      timestamp = Time.now.strftime('%Y-%m-%d %H:%M:%S')
+      puts "[#{timestamp}]"
+      readings.each do |r|
+        puts "  #{r.sensor_type}: #{r.value} #{r.unit}"
+      end
+    end
+  end
+
+  def test_gpio(args)
+    pin = args.shift || 'P9_12'
+    setup_backends
+    gpio = Dredger::IoT::Bus::Auto.gpio
+
+    puts "Testing GPIO pin #{pin}..."
+    gpio.set_direction(pin, :out)
+
+    3.times do |i|
+      puts "  Cycle #{i + 1}: HIGH"
+      gpio.write(pin, 1)
+      sleep 0.5
+
+      puts "  Cycle #{i + 1}: LOW"
+      gpio.write(pin, 0)
+      sleep 0.5
+    end
+
+    puts 'GPIO test complete'
+  ensure
+    gpio&.close
+  end
+
+  def test_i2c
+    setup_backends
+    i2c = Dredger::IoT::Bus::Auto.i2c
+
+    puts 'Scanning I2C bus...'
+    puts 'Note: This only works with hardware backend'
+    puts
+
+    # Common I2C addresses
+    addresses = [0x18, 0x76, 0x77]
+    addresses.each do |addr|
+      print "  0x#{addr.to_s(16).upcase}: "
+      begin
+        i2c.read(addr, 1)
+        puts 'FOUND'
+      rescue StandardError
+        puts '--'
+      end
+    end
+  ensure
+    i2c&.close
+  end
+
+  def show_info
+    puts "Dredger-IoT v#{Dredger::IoT::VERSION}"
+    puts "Ruby #{RUBY_VERSION}"
+    puts
+    puts 'Backends:'
+    puts "  GPIO: #{gpio_backend_info}"
+    puts "  I2C:  #{i2c_backend_info}"
+    puts
+    puts 'Environment:'
+    puts "  DREDGER_IOT_GPIO_BACKEND: #{ENV['DREDGER_IOT_GPIO_BACKEND'] || '(not set)'}"
+    puts "  DREDGER_IOT_I2C_BACKEND:  #{ENV['DREDGER_IOT_I2C_BACKEND'] || '(not set)'}"
+  end
+
+  def setup_backends
+    case @options[:backend]
+    when 'simulation'
+      ENV['DREDGER_IOT_GPIO_BACKEND'] = 'simulation'
+      ENV['DREDGER_IOT_I2C_BACKEND'] = 'simulation'
+    when 'hardware'
+      ENV['DREDGER_IOT_GPIO_BACKEND'] = 'libgpiod'
+      ENV['DREDGER_IOT_I2C_BACKEND'] = 'linux'
+    end
+  end
+
+  def gpio_backend_info
+    File.exist?('/dev/gpiochip0') ? 'libgpiod (detected)' : 'simulation (no hardware)'
+  end
+
+  def i2c_backend_info
+    File.exist?('/dev/i2c-1') ? 'linux (detected)' : 'simulation (no hardware)'
+  end
+end
+
+DredgerCLI.new.run(ARGV) if $PROGRAM_NAME == __FILE__

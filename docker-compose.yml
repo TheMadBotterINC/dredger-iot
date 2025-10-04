@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  # Development environment with simulation backends
+  dev:
+    build: .
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+    environment:
+      - DREDGER_IOT_GPIO_BACKEND=simulation
+      - DREDGER_IOT_I2C_BACKEND=simulation
+    command: bash
+
+  # Run tests
+  test:
+    build: .
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+    command: bundle exec rspec
+
+  # Run RuboCop
+  lint:
+    build: .
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+    command: bundle exec rubocop
+
+  # Interactive Ruby console
+  console:
+    build: .
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+    stdin_open: true
+    tty: true
+    command: bundle exec irb -r ./lib/dredger/iot
+
+  # Run examples (simulation mode)
+  examples:
+    build: .
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+    environment:
+      - DREDGER_IOT_GPIO_BACKEND=simulation
+      - DREDGER_IOT_I2C_BACKEND=simulation
+    command: bundle exec ruby examples/multi_sensor_monitor.rb
+
+volumes:
+  bundle_cache:

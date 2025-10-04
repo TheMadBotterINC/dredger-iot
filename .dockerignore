@@ -1,0 +1,11 @@
+.git
+.github
+*.gem
+coverage
+tmp
+pkg
+vendor/bundle
+.bundle
+.rspec_status
+*.log
+.DS_Store

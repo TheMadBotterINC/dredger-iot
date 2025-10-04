@@ -41,8 +41,8 @@ Gem::Specification.new do |spec|
   spec.files = Dir.chdir(__dir__) do
     Dir['lib/**/*', 'LICENSE.txt', 'README.md', 'CHANGELOG.md']
   end
-  spec.bindir        = 'exe'
-  spec.executables   = []
+  spec.bindir        = 'bin'
+  spec.executables   = ['dredger']
   spec.require_paths = ['lib']
 
   spec.add_dependency 'ffi', '~> 1.15'

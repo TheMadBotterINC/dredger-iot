@@ -17,6 +17,8 @@ SimpleCov.start do
   add_filter %r{/lib/dredger/iot/sensors/dht22_provider\.rb$}
   add_filter %r{/lib/dredger/iot/sensors/bme280_provider\.rb$}
   add_filter %r{/lib/dredger/iot/sensors/ds18b20_provider\.rb$}
+  # Exclude all provider implementations from coverage; hardware-dependent
+  add_filter %r{/lib/dredger/iot/sensors/.+_provider\.rb$}
 end
 
 require 'bundler/setup'

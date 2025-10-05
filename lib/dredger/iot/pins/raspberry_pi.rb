@@ -25,8 +25,8 @@ module Dredger
         # Accept variants like GPIO17, BCM17, PIN11, BOARD11
         def self.valid_label?(label)
           s = label.to_s.upcase
-          return true if s =~ /^(GPIO|BCM)\d+$/
-          return true if s =~ /^(PIN|BOARD)\d+$/
+          return true if s.match?(/^(GPIO|BCM)\d+$/)
+          return true if s.match?(/^(PIN|BOARD)\d+$/)
 
           false
         end

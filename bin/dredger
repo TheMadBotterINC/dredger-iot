@@ -32,6 +32,8 @@ class DredgerCLI
       test_i2c
     when 'info'
       show_info
+    when 'doctor'
+      doctor
     else
       puts parser
       exit 1
@@ -53,6 +55,7 @@ class DredgerCLI
       opts.separator '  read SENSOR [OPTIONS]  Read from a sensor'
       opts.separator '  test-gpio PIN          Test GPIO pin'
       opts.separator '  test-i2c               Scan I2C bus'
+      opts.separator '  doctor                 Check system prerequisites'
       opts.separator '  info                   Show system information'
       opts.separator ''
       opts.separator 'Options:'
@@ -268,6 +271,51 @@ class DredgerCLI
     puts 'Environment:'
     puts "  DREDGER_IOT_GPIO_BACKEND: #{ENV['DREDGER_IOT_GPIO_BACKEND'] || '(not set)'}"
     puts "  DREDGER_IOT_I2C_BACKEND:  #{ENV['DREDGER_IOT_I2C_BACKEND'] || '(not set)'}"
+  end
+
+  def doctor
+    puts 'Doctor: checking system prerequisites...'
+    puts
+    check_device_node('/dev/gpiochip0', 'GPIO (libgpiod) device')
+    check_device_node('/dev/i2c-1', 'I2C device (bus 1)')
+    check_path('/sys/bus/w1/devices', '1-Wire bus (DS18B20) directory')
+
+    puts
+    puts 'Kernel modules:'
+    mods = read_proc_modules
+    puts "  i2c-dev: #{mods.include?('i2c_dev') ? 'loaded' : 'missing'}"
+    puts "  w1-gpio: #{mods.include?('w1_gpio') ? 'loaded' : 'missing'}"
+    puts "  w1-therm: #{mods.include?('w1_therm') ? 'loaded' : 'missing'}"
+
+    puts
+    puts 'Recommendations:'
+    puts "  sudo apt-get install gpiod i2c-tools"
+    puts "  sudo usermod -a -G gpio $USER  # for GPIO access"
+    puts "  sudo usermod -a -G i2c $USER   # for I2C access"
+    puts "  sudo modprobe i2c-dev"
+    puts "  sudo modprobe w1-gpio; sudo modprobe w1-therm"
+  end
+
+  def check_device_node(path, desc)
+    if File.exist?(path)
+      puts "  ✔ #{desc}: present (#{path})"
+    else
+      puts "  ✖ #{desc}: missing (#{path})"
+    end
+  end
+
+  def check_path(path, desc)
+    if Dir.exist?(path)
+      puts "  ✔ #{desc}: present (#{path})"
+    else
+      puts "  ✖ #{desc}: missing (#{path})"
+    end
+  end
+
+  def read_proc_modules
+    File.read('/proc/modules')
+  rescue StandardError
+    ''
   end
 
   def setup_backends

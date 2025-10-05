@@ -31,9 +31,11 @@ RSpec.describe Dredger::IoT::Pins::RaspberryPi do
     expect { described_class.resolve_label_to_pinref('PIN1') }.to raise_error(ArgumentError)
     expect { described_class.resolve_label_to_pinref('FOO') }.to raise_error(ArgumentError)
   end
+
   it 'passes through PinRef and Integer pins unchanged' do
     backend = Class.new do
       attr_reader :got
+
       def set_direction(pin, _dir)
         @got = pin
       end
@@ -42,7 +44,7 @@ RSpec.describe Dredger::IoT::Pins::RaspberryPi do
     adapter = Dredger::IoT::Bus::GPIOLabelAdapter.new(backend: backend)
 
     # PinRef pass-through
-    pinref = Dredger::IoT::Pins::RaspberryPi.resolve_label_to_pinref('GPIO17')
+    pinref = described_class.resolve_label_to_pinref('GPIO17')
     adapter.set_direction(pinref, :out)
     expect(backend.got).to equal(pinref)
 
@@ -50,31 +52,34 @@ RSpec.describe Dredger::IoT::Pins::RaspberryPi do
     adapter.set_direction(17, :out)
     expect(backend.got).to eq(17)
   end
-end
 
-RSpec.describe Dredger::IoT::Bus::GPIOLabelAdapter do
-  it 'uses RaspberryPi mapper when provided with GPIO label' do
-    backend = Class.new do
-      attr_reader :resolved, :written
-      def set_direction(pin, dir)
-        @resolved = pin
-      end
-      def write(pin, value)
-        @resolved = pin
-        @written = value
-      end
-      def read(pin)
-        @resolved = pin
-        1
-      end
-    end.new
+  context 'with GPIOLabelAdapter' do
+    it 'uses RaspberryPi mapper when provided with GPIO label' do
+      backend = Class.new do
+        attr_reader :resolved, :written
 
-    adapter = described_class.new(backend: backend)
-    adapter.set_direction('GPIO17', :out)
-    expect(backend.resolved.line).to eq(17)
-    # also exercise write and read paths
-    adapter.write('GPIO17', 1)
-    expect(backend.written).to eq(1)
-    expect(adapter.read('GPIO17')).to eq(1)
+        def set_direction(pin, _dir)
+          @resolved = pin
+        end
+
+        def write(pin, value)
+          @resolved = pin
+          @written = value
+        end
+
+        def read(pin)
+          @resolved = pin
+          1
+        end
+      end.new
+
+      adapter = Dredger::IoT::Bus::GPIOLabelAdapter.new(backend: backend)
+      adapter.set_direction('GPIO17', :out)
+      expect(backend.resolved.line).to eq(17)
+      # also exercise write and read paths
+      adapter.write('GPIO17', 1)
+      expect(backend.written).to eq(1)
+      expect(adapter.read('GPIO17')).to eq(1)
+    end
   end
 end

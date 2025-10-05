@@ -26,12 +26,14 @@ module Dredger
 
         private
 
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def resolve(pin)
           # Already a PinRef with line
           return pin if pin.respond_to?(:line) && !pin.line.nil?
+
           # Numeric line
           return Integer(pin) if pin.is_a?(Integer) || pin.to_s =~ /^\d+$/
-          # Beaglebone-style label
+
           # Try all mappers in order
           @mappers.each do |m|
             if m.respond_to?(:resolve_label_to_pinref) && m.respond_to?(:valid_label?) && m.valid_label?(pin)
@@ -41,6 +43,7 @@ module Dredger
 
           raise ArgumentError, 'Unsupported pin format'
         end
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       end
     end
   end

@@ -70,6 +70,26 @@ Environment overrides:
 - `DREDGER_IOT_GPIO_BACKEND`: `simulation` | `libgpiod`
 - `DREDGER_IOT_I2C_BACKEND`: `simulation` | `linux`
 
+## Raspberry Pi GPIO label mapping
+
+When the libgpiod backend is selected via Auto, Dredger-IoT resolves Raspberry Pi labels to the corresponding chip:line before accessing the GPIO line. Accepted labels:
+- GPIO17 or BCM17 (Broadcom numbering)
+- PIN11 or BOARD11 (header pin numbers)
+
+On most Raspberry Pi boards, GPIO lines are exposed on gpiochip0 and the line offset matches the BCM number. The adapter will translate labels accordingly.
+
+Example:
+
+```ruby path=null start=null
+require 'dredger/iot'
+
+gpio = Dredger::IoT::Bus::Auto.gpio # picks libgpiod on RPi, otherwise simulation
+
+# Use Raspberry Pi labels
+gpio.set_direction('GPIO17', :out)
+gpio.write('GPIO17', 1)
+```
+
 ## Beaglebone P9_XX label mapping
 
 When the libgpiod backend is selected via Auto, Dredger-IoT resolves Beaglebone labels like `P9_12` to the corresponding `gpiochipN:line` before accessing the GPIO line. A minimal built-in table is provided and can be extended in future releases.

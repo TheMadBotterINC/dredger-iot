@@ -21,6 +21,11 @@ RSpec.describe Dredger::IoT::Pins::RaspberryPi do
     expect(pr.to_s).to include('chip0:17')
   end
 
+  it 'formats PinRef without chip/line as just the label' do
+    pr = described_class::PinRef.new(label: 'GPIO17', chip: nil, line: nil)
+    expect(pr.to_s).to eq('GPIO17')
+  end
+
   it 'is considered valid for label formats it supports' do
     expect(described_class.valid_label?('GPIO17')).to be(true)
     expect(described_class.valid_label?('BOARD11')).to be(true)
@@ -51,6 +56,18 @@ RSpec.describe Dredger::IoT::Pins::RaspberryPi do
     # Integer pass-through
     adapter.set_direction(17, :out)
     expect(backend.got).to eq(17)
+
+    # String numeric branch
+    adapter.set_direction('17', :out)
+    expect(backend.got).to eq(17)
+  end
+
+  it 'raises for unsupported pin label at adapter level' do
+    backend = Class.new do
+      def set_direction(pin, _dir); end
+    end.new
+    adapter = Dredger::IoT::Bus::GPIOLabelAdapter.new(backend: backend)
+    expect { adapter.set_direction('FOO', :out) }.to raise_error(ArgumentError)
   end
 
   context 'with GPIOLabelAdapter' do

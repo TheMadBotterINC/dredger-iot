@@ -142,6 +142,21 @@ INA219_SHUNT=0.05 INA219_ADDR=0x41 ruby examples/ina219_monitor.rb
 
 ---
 
+### `rpi_gpio_blink.rb`
+Blink an LED on Raspberry Pi using GPIO17 (BCM17, header PIN11).
+
+**Hardware needed:**
+- LED + resistor connected to GPIO17 → resistor → LED → GND
+
+**Run:**
+```bash
+ruby examples/rpi_gpio_blink.rb
+# override pin/interval/cycles
+PIN_LABEL=GPIO27 INTERVAL_SEC=0.25 CYCLES=5 ruby examples/rpi_gpio_blink.rb
+```
+
+---
+
 ## Simulation Mode
 
 All examples will run in simulation mode if no hardware is detected. This is perfect for testing and development:

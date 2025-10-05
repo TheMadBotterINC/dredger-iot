@@ -373,6 +373,29 @@ ls /sys/bus/w1/devices/
 # Should show devices like: 28-00000xxxxxx
 ```
 
+#### Raspberry Pi OS: Enable I2C and 1-Wire
+
+On Raspberry Pi OS you can enable I2C and 1-Wire via raspi-config or by editing /boot/config.txt.
+
+Option A: raspi-config (recommended)
+```bash path=null start=null
+sudo raspi-config
+# Interface Options → I2C → Enable
+# Interface Options → 1-Wire → Enable
+sudo reboot
+```
+
+Option B: edit /boot/config.txt
+```bash path=null start=null
+# Enable I2C
+sudo sed -i 's/^#\?dtparam=i2c_arm=.*/dtparam=i2c_arm=on/' /boot/config.txt
+# Enable 1-Wire on default BCM4 (PIN7)
+echo 'dtoverlay=w1-gpio,gpiopin=4' | sudo tee -a /boot/config.txt
+sudo reboot
+```
+
+Note: Dredger-IoT accepts Raspberry Pi labels like GPIO17, BCM17, and PIN11.
+
 #### Beaglebone Black Device Tree
 
 For Beaglebone Black, you may need to enable device tree overlays:

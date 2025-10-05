@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2025-10-05
+
+### Added
+- Examples: Raspberry Pi GPIO blink script (GPIO17)
+- Docs: Raspberry Pi OS instructions to enable I2C and 1-Wire
+
 ## [0.2.0] - 2025-10-05
 
 ### Added
@@ -64,7 +70,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - RuboCop configuration and compliance
 - Comprehensive documentation and usage examples
 
-[Unreleased]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.1.0...v0.1.1

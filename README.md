@@ -503,6 +503,10 @@ reading.timestamp    # Time object when reading was taken
 - **`INA219`** - Bus voltage/current monitor (I2C)
   - Parameters: `i2c_addr` (default: `0x40`), `provider`
   - Returns: bus_voltage (V), current (mA)
+  - CLI example:
+    ```bash path=null start=null
+    dredger read ina219 0x40 --shunt 0.1
+    ```
 
 ### Scheduling
 

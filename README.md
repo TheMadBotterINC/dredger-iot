@@ -98,6 +98,10 @@ Dredger-IoT includes drivers for popular embedded sensors:
 - **DS18B20** - 1-Wire digital temperature sensor
 - **BMP180** - I2C barometric pressure/temperature sensor
 - **MCP9808** - I2C high-accuracy temperature sensor
+- **SHT31** - I2C temperature/humidity sensor
+- **BH1750** - I2C ambient light sensor (lux)
+- **TSL2561** - I2C ambient light sensor (lux)
+- **INA219** - I2C bus voltage/current monitor
 
 Sensors use a provider pattern for testability and hardware abstraction.
 
@@ -483,6 +487,22 @@ reading.timestamp    # Time object when reading was taken
 - **`MCP9808`** - High-accuracy temperature (I2C)
   - Parameters: `i2c_addr` (default: `0x18`), `provider`
   - Returns: temperature (celsius)
+  
+- **`SHT31`** - Temperature/humidity (I2C)
+  - Parameters: `i2c_addr` (default: `0x44`), `provider`
+  - Returns: temperature (celsius), humidity (%)
+  
+- **`BH1750`** - Ambient light (I2C)
+  - Parameters: `i2c_addr` (default: `0x23`), `provider`
+  - Returns: illuminance (lux)
+  
+- **`TSL2561`** - Ambient light (I2C)
+  - Parameters: `i2c_addr` (default: `0x39`), `provider`
+  - Returns: illuminance (lux)
+  
+- **`INA219`** - Bus voltage/current monitor (I2C)
+  - Parameters: `i2c_addr` (default: `0x40`), `provider`
+  - Returns: bus_voltage (V), current (mA)
 
 ### Scheduling
 

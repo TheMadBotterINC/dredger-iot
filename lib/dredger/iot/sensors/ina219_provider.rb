@@ -37,7 +37,8 @@ module Dredger
 
         private
 
-        # Read 16-bit word; INA219 registers are big-endian; bus methods return bytes LSB first when using read(register)
+        # Read 16-bit word
+        # INA219 registers are big-endian; register reads may return bytes LSB-first
         def read_word(addr, reg, signed: false)
           bytes = @i2c.read(addr, 2, register: reg)
           val = (bytes[0] << 8) | bytes[1]

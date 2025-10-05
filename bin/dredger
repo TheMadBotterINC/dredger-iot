@@ -87,7 +87,11 @@ class DredgerCLI
       'bme280' => 'BME280 - Temperature/Humidity/Pressure (I2C)',
       'ds18b20' => 'DS18B20 - Waterproof Temperature (1-Wire)',
       'bmp180' => 'BMP180 - Barometric Pressure/Temperature (I2C)',
-      'mcp9808' => 'MCP9808 - High-Accuracy Temperature (I2C)'
+      'mcp9808' => 'MCP9808 - High-Accuracy Temperature (I2C)',
+      'sht31' => 'SHT31 - Temperature/Humidity (I2C)',
+      'bh1750' => 'BH1750 - Ambient Light (I2C)',
+      'tsl2561' => 'TSL2561 - Ambient Light (I2C)',
+      'ina219' => 'INA219 - Bus Voltage/Current (I2C)'
     }
 
     puts 'Available Sensors:'
@@ -136,6 +140,26 @@ class DredgerCLI
         exit 1
       end
       Dredger::IoT::Sensors::DS18B20.new(device_id: device_id, provider: provider)
+    when 'sht31'
+      addr = (args.shift || '0x44').to_i(16)
+      i2c = Dredger::IoT::Bus::Auto.i2c
+      provider = Dredger::IoT::Sensors::SHT31Provider.new(i2c_bus: i2c)
+      Dredger::IoT::Sensors::SHT31.new(i2c_addr: addr, provider: provider)
+    when 'bh1750'
+      addr = (args.shift || '0x23').to_i(16)
+      i2c = Dredger::IoT::Bus::Auto.i2c
+      provider = Dredger::IoT::Sensors::BH1750Provider.new(i2c_bus: i2c)
+      Dredger::IoT::Sensors::BH1750.new(i2c_addr: addr, provider: provider)
+    when 'tsl2561'
+      addr = (args.shift || '0x39').to_i(16)
+      i2c = Dredger::IoT::Bus::Auto.i2c
+      provider = Dredger::IoT::Sensors::TSL2561Provider.new(i2c_bus: i2c)
+      Dredger::IoT::Sensors::TSL2561.new(i2c_addr: addr, provider: provider)
+    when 'ina219'
+      addr = (args.shift || '0x40').to_i(16)
+      i2c = Dredger::IoT::Bus::Auto.i2c
+      provider = Dredger::IoT::Sensors::INA219Provider.new(i2c_bus: i2c)
+      Dredger::IoT::Sensors::INA219.new(i2c_addr: addr, provider: provider)
     else
       puts "Error: Unknown sensor type '#{type}'"
       exit 1

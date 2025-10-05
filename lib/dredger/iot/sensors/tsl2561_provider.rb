@@ -52,7 +52,7 @@ module Dredger
         def compute_lux(ch0, ch1)
           return 0.0 if ch0.zero?
 
-          ratio = ch1.to_f / ch0.to_f
+          ratio = ch1.to_f / ch0
 
           if ratio <= 0.5
             (0.0304 * ch0) - (0.062 * ch0 * (ratio**1.4))

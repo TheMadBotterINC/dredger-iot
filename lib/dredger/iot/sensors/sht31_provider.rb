@@ -31,7 +31,7 @@ module Dredger
 
           temp_c = -45.0 + (175.0 * st / 65_535.0)
           humidity = (100.0 * srh / 65_535.0)
-          humidity = [[humidity, 0.0].max, 100.0].min
+          humidity = humidity.clamp(0.0, 100.0)
 
           { temperature_c: temp_c, humidity: humidity }
         end

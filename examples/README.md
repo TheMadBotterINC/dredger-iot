@@ -81,6 +81,67 @@ Complete environmental monitoring system with multiple sensors and scheduled pol
 
 ---
 
+### `sht31_sensor.rb`
+Reads temperature and humidity from SHT31.
+
+**Hardware needed:**
+- SHT31 sensor on I2C (default address 0x44)
+
+**Run:**
+```bash
+ruby examples/sht31_sensor.rb
+# or override address
+SHT31_ADDR=0x45 ruby examples/sht31_sensor.rb
+```
+
+---
+
+### `bh1750_lux.rb`
+Reads ambient light (lux) from BH1750.
+
+**Hardware needed:**
+- BH1750 sensor on I2C (default address 0x23)
+
+**Run:**
+```bash
+ruby examples/bh1750_lux.rb
+# or override address
+BH1750_ADDR=0x5C ruby examples/bh1750_lux.rb
+```
+
+---
+
+### `tsl2561_lux.rb`
+Reads ambient light (lux) from TSL2561.
+
+**Hardware needed:**
+- TSL2561 sensor on I2C (default address 0x39)
+
+**Run:**
+```bash
+ruby examples/tsl2561_lux.rb
+# or override address
+TSL2561_ADDR=0x29 ruby examples/tsl2561_lux.rb
+```
+
+---
+
+### `ina219_monitor.rb`
+Monitors bus voltage and current using INA219.
+
+**Hardware needed:**
+- INA219 sensor on I2C (default address 0x40)
+- Known shunt resistor (default 0.1Ω)
+
+**Run:**
+```bash
+ruby examples/ina219_monitor.rb
+# override shunt and address
+INA219_SHUNT=0.05 INA219_ADDR=0x41 ruby examples/ina219_monitor.rb
+```
+
+---
+
 ## Simulation Mode
 
 All examples will run in simulation mode if no hardware is detected. This is perfect for testing and development:

@@ -105,6 +105,51 @@ Dredger-IoT includes drivers for popular embedded sensors:
 
 Sensors use a provider pattern for testability and hardware abstraction.
 
+## CLI Usage
+
+Commands:
+- list-sensors
+  - List available sensor types supported by dredger-iot.
+- read SENSOR [ARGS]
+  - Read once or continuously from a sensor.
+  - Examples:
+    - dredger read bme280 0x76
+    - dredger read dht22 P9_12
+    - dredger read ina219 0x40 --shunt 0.1
+- test-gpio PIN
+  - Simple blink test to verify GPIO output works.
+- test-i2c
+  - Scans a few common I2C addresses (hardware backend only).
+- info
+  - Prints version, detected backends, and environment variables.
+
+Options:
+- --backend BACKEND
+  - auto (default), simulation, hardware
+  - simulation forces both GPIO and I2C simulation backends
+  - hardware forces libgpiod (GPIO) and linux (I2C)
+- --format FORMAT
+  - text (default) or json
+- --interval SECONDS
+  - Poll continuously at the specified interval (e.g., 2.0)
+- --shunt OHMS
+  - INA219-only: specify the shunt resistance in ohms (default 0.1)
+
+Examples:
+```bash
+# Read a BME280 once (auto-detected backends)
+dredger read bme280 0x76
+
+# Read a DHT22 every 2 seconds, JSON output
+dredger read dht22 P9_12 --interval 2 --format json
+
+# Force simulation backends for local testing
+dredger --backend simulation read bh1750 0x23
+
+# INA219 with custom shunt
+dredger read ina219 0x40 --shunt 0.05
+```
+
 ## Usage Examples
 
 ### DHT22 Temperature/Humidity Sensor

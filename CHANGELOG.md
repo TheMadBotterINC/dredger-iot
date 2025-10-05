@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2025-10-05
+
+### Added
+- New sensors: SHT31 (I2C temp/humidity), BH1750 (I2C lux), TSL2561 (I2C lux), INA219 (I2C bus voltage/current)
+- CLI: --shunt option for INA219 to specify shunt resistance (default 0.1 Ω)
+- Examples: example scripts for SHT31, BH1750, TSL2561, INA219
+
+### Changed
+- README: document new sensors and CLI usage
+- Coverage: exclude all provider implementations from coverage (hardware-dependent)
+
 ## [0.1.2] - 2025-10-04
 
 ### Added
@@ -53,7 +64,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - RuboCop configuration and compliance
 - Comprehensive documentation and usage examples
 
-[Unreleased]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/TheMadBotterINC/dredger-iot/releases/tag/v0.1.0

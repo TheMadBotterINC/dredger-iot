@@ -69,6 +69,10 @@ class DredgerCLI
         @options[:interval] = i
       end
 
+      opts.on('--shunt OHMS', Float, 'INA219 shunt resistance in ohms (default: 0.1)') do |ohms|
+        @options[:ina219_shunt] = ohms
+      end
+
       opts.on('-h', '--help', 'Show this help') do
         puts opts
         exit
@@ -158,7 +162,8 @@ class DredgerCLI
     when 'ina219'
       addr = (args.shift || '0x40').to_i(16)
       i2c = Dredger::IoT::Bus::Auto.i2c
-      provider = Dredger::IoT::Sensors::INA219Provider.new(i2c_bus: i2c)
+      shunt = @options[:ina219_shunt] || 0.1
+      provider = Dredger::IoT::Sensors::INA219Provider.new(i2c_bus: i2c, shunt_resistance_ohms: shunt)
       Dredger::IoT::Sensors::INA219.new(i2c_addr: addr, provider: provider)
     else
       puts "Error: Unknown sensor type '#{type}'"

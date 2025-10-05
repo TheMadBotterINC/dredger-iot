@@ -5,9 +5,11 @@ module Dredger
     module Bus
       # Adapts label strings (e.g. 'P9_12') to PinRef with chip:line for libgpiod backends
       class GPIOLabelAdapter
-        def initialize(backend:, mapper: Dredger::IoT::Pins::Beaglebone)
+        # mapper can be a single mapper module/class or an Array of them.
+        # Defaults to both Beaglebone and RaspberryPi mappers.
+        def initialize(backend:, mapper: [Dredger::IoT::Pins::Beaglebone, Dredger::IoT::Pins::RaspberryPi])
           @backend = backend
-          @mapper = mapper
+          @mappers = Array(mapper)
         end
 
         def set_direction(pin, direction)
@@ -30,7 +32,12 @@ module Dredger
           # Numeric line
           return Integer(pin) if pin.is_a?(Integer) || pin.to_s =~ /^\d+$/
           # Beaglebone-style label
-          return @mapper.resolve_label_to_pinref(pin) if @mapper.respond_to?(:resolve_label_to_pinref)
+          # Try all mappers in order
+          @mappers.each do |m|
+            if m.respond_to?(:resolve_label_to_pinref) && m.respond_to?(:valid_label?) && m.valid_label?(pin)
+              return m.resolve_label_to_pinref(pin)
+            end
+          end
 
           raise ArgumentError, 'Unsupported pin format'
         end

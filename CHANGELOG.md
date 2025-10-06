@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [0.3.0] - 2025-10-06
+
 ### Added
 - New sensors for industrial IoT applications:
   - **ADXL345** - I2C 3-axis accelerometer for vibration monitoring (±2g, ±4g, ±8g, ±16g ranges)
@@ -79,7 +82,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - RuboCop configuration and compliance
 - Comprehensive documentation and usage examples
 
-[Unreleased]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/TheMadBotterINC/dredger-iot/compare/v0.1.1...v0.1.2

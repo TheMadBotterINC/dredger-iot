@@ -113,15 +113,24 @@ If you run on a development host (no /dev/gpiochip0), Auto will default to the s
 
 Dredger-IoT includes drivers for popular embedded sensors:
 
+**Environmental Sensors:**
 - **DHT22** - GPIO humidity/temperature sensor
 - **BME280** - I2C temperature/humidity/pressure sensor
-- **DS18B20** - 1-Wire digital temperature sensor
 - **BMP180** - I2C barometric pressure/temperature sensor
 - **MCP9808** - I2C high-accuracy temperature sensor
 - **SHT31** - I2C temperature/humidity sensor
+- **DS18B20** - 1-Wire digital temperature sensor
+- **SCD30** - I2C NDIR CO2/temperature/humidity sensor (NEW)
+
+**Light & Motion Sensors:**
 - **BH1750** - I2C ambient light sensor (lux)
 - **TSL2561** - I2C ambient light sensor (lux)
+- **ADXL345** - I2C 3-axis accelerometer (vibration monitoring) (NEW)
+
+**Industrial Sensors:**
 - **INA219** - I2C bus voltage/current monitor
+- **YF-S201** - GPIO hall effect flow meter (liquid flow) (NEW)
+- **NEO-6M** - UART/Serial GPS module (location tracking) (NEW)
 
 Sensors use a provider pattern for testability and hardware abstraction.
 
@@ -243,6 +252,101 @@ sensor = Dredger::IoT::Sensors::DS18B20.new(
 
 temp = sensor.readings.first
 puts "#{temp.value}°C"
+```
+
+### ADXL345 Accelerometer (Vibration Monitoring)
+
+```ruby path=null start=null
+require 'dredger/iot'
+
+# Set up I2C bus and ADXL345 provider
+i2c = Dredger::IoT::Bus::Auto.i2c
+provider = Dredger::IoT::Sensors::ADXL345Provider.new(i2c_bus: i2c, range: 2) # ±2g
+
+# Create sensor instance (default I2C address 0x53)
+sensor = Dredger::IoT::Sensors::ADXL345.new(
+  i2c_addr: 0x53,
+  provider: provider,
+  metadata: { location: 'motor_mount' }
+)
+
+readings = sensor.readings
+readings.each { |r| puts "#{r.sensor_type}: #{r.value} #{r.unit}" }
+# => acceleration_x: 0.024 g
+# => acceleration_y: -0.012 g
+# => acceleration_z: 0.980 g
+```
+
+### SCD30 CO2 Sensor
+
+```ruby path=null start=null
+require 'dredger/iot'
+
+# Set up I2C bus and SCD30 provider
+i2c = Dredger::IoT::Bus::Auto.i2c
+provider = Dredger::IoT::Sensors::SCD30Provider.new(i2c_bus: i2c, interval: 2)
+
+# Create sensor instance (default I2C address 0x61)
+sensor = Dredger::IoT::Sensors::SCD30.new(
+  i2c_addr: 0x61,
+  provider: provider,
+  metadata: { location: 'greenhouse' }
+)
+
+readings = sensor.readings
+readings.each { |r| puts "#{r.sensor_type}: #{r.value} #{r.unit}" }
+# => co2: 412.5 ppm
+# => temperature: 23.45 celsius
+# => humidity: 45.2 %
+```
+
+### YF-S201 Flow Meter
+
+```ruby path=null start=null
+require 'dredger/iot'
+
+# Set up GPIO bus and flow meter provider
+gpio = Dredger::IoT::Bus::Auto.gpio
+provider = Dredger::IoT::Sensors::YFS201Provider.new(gpio_bus: gpio, calibration_factor: 7.5)
+
+# Create sensor instance
+sensor = Dredger::IoT::Sensors::YFS201.new(
+  pin_label: 'P9_12',
+  provider: provider,
+  sample_duration: 1.0, # Count pulses for 1 second
+  metadata: { location: 'main_line' }
+)
+
+readings = sensor.readings
+flow = readings.first
+puts "Flow: #{flow.value} #{flow.unit}"
+puts "Pulses: #{flow.metadata[:pulses]}"
+# => Flow: 5.25 L/min
+# => Pulses: 656
+```
+
+### NEO-6M GPS Module
+
+```ruby path=null start=null
+require 'dredger/iot'
+
+# Set up GPS provider
+provider = Dredger::IoT::Sensors::NEO6MProvider.new(baud_rate: 9600, timeout: 5)
+
+# Create sensor instance
+sensor = Dredger::IoT::Sensors::NEO6M.new(
+  device: '/dev/ttyAMA0', # Serial device
+  provider: provider,
+  metadata: { vehicle: 'truck_1' }
+)
+
+readings = sensor.readings
+readings.each { |r| puts "#{r.sensor_type}: #{r.value} #{r.unit}" }
+# => latitude: 37.774929 degrees
+# => longitude: -122.419418 degrees
+# => altitude: 52.4 m
+# => speed: 12.5 km/h
+# => gps_quality: 8 satellites
 ```
 
 ### Multiple Sensors with Scheduled Polling
@@ -595,6 +699,25 @@ reading.timestamp    # Time object when reading was taken
     ```bash path=null start=null
     dredger read ina219 0x40 --shunt 0.1
     ```
+
+- **`ADXL345`** - 3-axis accelerometer (I2C)
+  - Parameters: `i2c_addr` (default: `0x53`), `provider`
+  - Returns: acceleration_x (g), acceleration_y (g), acceleration_z (g)
+  - Ranges: ±2g, ±4g, ±8g, ±16g (configurable in provider)
+  
+- **`SCD30`** - NDIR CO2 sensor (I2C)
+  - Parameters: `i2c_addr` (default: `0x61`), `provider`
+  - Returns: co2 (ppm), temperature (celsius), humidity (%)
+  - Range: 400-10,000 ppm CO2
+  
+- **`YFS201`** - Hall effect flow meter (GPIO)
+  - Parameters: `pin_label`, `provider`, `sample_duration` (default: `1.0`)
+  - Returns: flow_rate (L/min)
+  - Range: 1-30 L/min
+  
+- **`NEO6M`** - GPS module (UART/Serial)
+  - Parameters: `device` (default: `'/dev/ttyAMA0'`), `provider`
+  - Returns: latitude (degrees), longitude (degrees), altitude (m), speed (km/h), gps_quality (satellites)
 
 ### Scheduling
 

@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- New sensors for industrial IoT applications:
+  - **ADXL345** - I2C 3-axis accelerometer for vibration monitoring (±2g, ±4g, ±8g, ±16g ranges)
+  - **SCD30** - I2C NDIR CO2 sensor with integrated temperature and humidity (400-10,000 ppm range)
+  - **YF-S201** - GPIO hall effect flow meter for liquid flow measurement (1-30 L/min range)
+  - **NEO-6M** - UART/Serial GPS module with NMEA 0183 parsing for location tracking
+- README: comprehensive usage examples for all new sensors
+- README: organized sensor list by category (Environmental, Light & Motion, Industrial)
+
 ## [0.2.1] - 2025-10-05
 
 ### Added

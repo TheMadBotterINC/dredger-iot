@@ -45,9 +45,9 @@ module Dredger
               line = read_line(serial, @timeout)
               next unless line
 
-              if line.start_with?('$GPGGA') || line.start_with?('$GNGGA')
+              if line.start_with?('$GPGGA', '$GNGGA')
                 gga_data = parse_gga(line)
-              elsif line.start_with?('$GPRMC') || line.start_with?('$GNRMC')
+              elsif line.start_with?('$GPRMC', '$GNRMC')
                 rmc_data = parse_rmc(line)
               end
             end
@@ -125,7 +125,7 @@ module Dredger
           degree_digits = coord_str.length >= 5 && coord_str[4] == '.' ? 2 : 3
 
           degrees = coord_str[0, degree_digits].to_f
-          minutes = coord_str[degree_digits..-1].to_f
+          minutes = coord_str[degree_digits..].to_f
 
           decimal_degrees = degrees + (minutes / 60.0)
 

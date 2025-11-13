@@ -87,7 +87,7 @@ module Dredger
             sleep(0.01)
             status = @i2c.read(addr, 3)
             # Data ready when bit 0 of word is 1
-            data_ready = (status[1] & 0x01) == 1
+            data_ready = status[1].allbits?(0x01)
             return if data_ready
 
             raise IOError, 'SCD30 data ready timeout' if Time.now - start_time > timeout
@@ -130,7 +130,7 @@ module Dredger
           data.each do |byte|
             crc ^= byte
             8.times do
-              crc = (crc & 0x80) != 0 ? ((crc << 1) ^ 0x31) : (crc << 1)
+              crc = crc.anybits?(0x80) ? ((crc << 1) ^ 0x31) : (crc << 1)
               crc &= 0xFF
             end
           end

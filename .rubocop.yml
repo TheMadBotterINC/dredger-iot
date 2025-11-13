@@ -15,6 +15,8 @@ plugins:
 
 Layout/LineLength:
   Max: 120
+  Exclude:
+    - 'lib/dredger/iot/sensors/*_provider.rb'
 
 Style/Documentation:
   Enabled: false
@@ -45,6 +47,14 @@ RSpec/SpecFilePathFormat:
     DHT22: dht22
     DS18B20: ds18b20
     MCP9808: mcp9808
+    SHT31: sht31
+    BH1750: bh1750
+    TSL2561: tsl2561
+    INA219: ina219
+    ADXL345: adxl345
+    SCD30: scd30
+    YFS201: yf_s201
+    NEO6M: neo6m
 
 Metrics/BlockLength:
   Exclude:
@@ -53,3 +63,14 @@ Metrics/BlockLength:
 Metrics/AbcSize:
   Exclude:
     - 'lib/dredger/iot/sensors/*_provider.rb'
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - 'lib/dredger/iot/sensors/*_provider.rb'
+
+Metrics/PerceivedComplexity:
+  Exclude:
+    - 'lib/dredger/iot/sensors/*_provider.rb'
+
+RSpec/MessageSpies:
+  Enabled: false

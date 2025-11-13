@@ -13,15 +13,15 @@ RSpec.describe Dredger::IoT::Sensors::ADXL345 do
     sensor = described_class.new(i2c_addr: 0x53, provider: FakeADXL345Provider.new)
     rs = sensor.readings
     expect(rs.size).to eq(3)
-    
+
     x_accel = rs.find { |r| r.sensor_type == 'acceleration_x' }
     y_accel = rs.find { |r| r.sensor_type == 'acceleration_y' }
     z_accel = rs.find { |r| r.sensor_type == 'acceleration_z' }
-    
+
     expect(x_accel.unit).to eq('g')
     expect(y_accel.unit).to eq('g')
     expect(z_accel.unit).to eq('g')
-    
+
     expect(x_accel.value).to eq(0.024)
     expect(y_accel.value).to eq(-0.012)
     expect(z_accel.value).to eq(0.980)

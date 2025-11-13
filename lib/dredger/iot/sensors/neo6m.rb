@@ -8,7 +8,7 @@ module Dredger
       # Uses a provider interface to allow simulation in tests and hardware backends in production.
       class NEO6M < BaseSensor
         # provider must respond to :read_position(device) -> { latitude:, longitude:, altitude:, speed:, satellites: }
-        def initialize(device: '/dev/ttyAMA0', provider:, metadata: {})
+        def initialize(provider:, device: '/dev/ttyAMA0', metadata: {})
           super(metadata: metadata)
           @device = device
           @provider = provider

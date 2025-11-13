@@ -17,7 +17,7 @@ RSpec.describe Dredger::IoT::Sensors::YFS201 do
     )
     rs = sensor.readings
     expect(rs.size).to eq(1)
-    
+
     flow = rs.first
     expect(flow.sensor_type).to eq('flow_rate')
     expect(flow.unit).to eq('L/min')

@@ -13,15 +13,15 @@ RSpec.describe Dredger::IoT::Sensors::SCD30 do
     sensor = described_class.new(i2c_addr: 0x61, provider: FakeSCD30Provider.new)
     rs = sensor.readings
     expect(rs.size).to eq(3)
-    
+
     co2 = rs.find { |r| r.sensor_type == 'co2' }
     temp = rs.find { |r| r.sensor_type == 'temperature' }
     hum = rs.find { |r| r.sensor_type == 'humidity' }
-    
+
     expect(co2.unit).to eq('ppm')
     expect(temp.unit).to eq('celsius')
     expect(hum.unit).to eq('%')
-    
+
     expect(co2.value).to eq(412.5)
     expect(temp.value).to eq(23.45)
     expect(hum.value).to eq(45.2)

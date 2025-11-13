@@ -8,7 +8,7 @@ module Dredger
       # Uses a provider interface to allow simulation in tests and hardware backends in production.
       class ADXL345 < BaseSensor
         # provider must respond to :read_measurements(i2c_addr) -> { x_g:, y_g:, z_g: }
-        def initialize(i2c_addr: 0x53, provider:, metadata: {})
+        def initialize(provider:, i2c_addr: 0x53, metadata: {})
           super(metadata: metadata)
           @i2c_addr = i2c_addr
           @provider = provider

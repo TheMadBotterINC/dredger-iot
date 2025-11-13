@@ -66,14 +66,12 @@ module Dredger
           # For production, use hardware interrupts or kernel GPIO edge detection
           while Time.now - start_time < duration
             current_state = @gpio.read(pin_label)
-            
+
             # Detect rising edge (0 -> 1 transition)
-            if current_state == 1 && last_state == 0
-              pulses += 1
-            end
-            
+            pulses += 1 if current_state == 1 && last_state.zero?
+
             last_state = current_state
-            
+
             # Small sleep to reduce CPU usage
             # Trade-off: Higher sleep = lower CPU, but may miss pulses
             # For accurate counting, use interrupts instead

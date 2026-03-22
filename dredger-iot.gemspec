@@ -12,7 +12,8 @@ Gem::Specification.new do |spec|
   spec.description   = <<~DESC
     Dredger-IoT provides FFI-based GPIO and I2C access for embedded Linux systems like Beaglebone Black.
     Features include: libgpiod GPIO backend, Linux i2c-dev I2C backend, simulation backends for testing,
-    sensor drivers (DHT22, BME280, DS18B20, BMP180, MCP9808), Beaglebone pin label mapping, and
+    sensor drivers (BME280, DS18B20, SHT31, BH1750, TSL2561, INA219, ADXL345, SCD30, YF-S201, NEO-6M),
+    Beaglebone and Raspberry Pi pin label mapping, and
     scheduling utilities for periodic polling and exponential backoff.
   DESC
   spec.homepage      = 'https://github.com/TheMadBotterINC/dredger-iot'
@@ -35,7 +36,7 @@ Gem::Specification.new do |spec|
   # Keywords for better discoverability
   spec.metadata['keywords'] = %w[
     iot embedded linux gpio i2c beaglebone raspberry-pi hardware sensors
-    dht22 bme280 ds18b20 bmp180 mcp9808 libgpiod automation
+    bme280 ds18b20 sht31 bh1750 tsl2561 ina219 adxl345 scd30 libgpiod automation
   ].join(', ')
 
   spec.files = Dir.chdir(__dir__) do
@@ -82,7 +83,7 @@ Gem::Specification.new do |spec|
            i2c  = Dredger::IoT::Bus::Auto.i2c
 
         💡 Supported Sensors:
-           DHT22, BME280, DS18B20, BMP180, MCP9808
+           BME280, DS18B20, SHT31, INA219, ADXL345, SCD30, and more
 
         📖 Full Documentation:
            https://github.com/TheMadBotterINC/dredger-iot

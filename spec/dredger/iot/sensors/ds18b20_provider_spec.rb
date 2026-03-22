@@ -11,7 +11,8 @@ RSpec.describe Dredger::IoT::Sensors::DS18B20Provider do
 
   describe '#read_temperature' do
     it 'rejects device_id with path traversal' do
-      expect { provider.read_temperature('../../etc/passwd') }.to raise_error(ArgumentError, /Invalid DS18B20 device_id/)
+      expect { provider.read_temperature('../../etc/passwd') }
+        .to raise_error(ArgumentError, /Invalid DS18B20 device_id/)
     end
 
     it 'rejects device_id with wrong family code' do

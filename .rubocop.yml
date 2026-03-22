@@ -46,6 +46,7 @@ RSpec/SpecFilePathFormat:
     BMP180: bmp180
     DHT22: dht22
     DS18B20: ds18b20
+    DS18B20Provider: ds18b20_provider
     MCP9808: mcp9808
     SHT31: sht31
     BH1750: bh1750

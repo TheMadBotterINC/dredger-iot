@@ -64,14 +64,9 @@ module Dredger
         # This is a stub - real implementation requires precise timing.
         # In production, consider using a kernel driver or hardware peripheral.
         def read_40_bits(_pin_label)
-          # Placeholder: return simulated data for now
-          # Real implementation would read GPIO with microsecond timing
-          # For each bit: wait for low->high transition, measure high duration
-          # If high > 40us, bit=1; else bit=0
-          warn 'DHT22Provider: bit-banging not fully implemented, returning stub data'
-          # humidity=65.2% => 0x028C, temp=31.4°C => 0x013A
-          # checksum = (0x02 + 0x8C + 0x01 + 0x3A) & 0xFF = 0xC9
-          [0x02, 0x8C, 0x01, 0x3A, 0xC9]
+          raise NotImplementedError,
+                'DHT22 bit-banging requires microsecond timing not achievable in pure Ruby. ' \
+                'Use a C extension, kernel driver (e.g., dht11 kernel module), or hardware peripheral.'
         end
       end
     end

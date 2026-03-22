@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'bundler/setup'
 require 'dredger/iot'
 require 'optparse'
 require 'json'
@@ -201,7 +200,7 @@ class DredgerCLI
           sensor_type: r.sensor_type,
           value: r.value,
           unit: r.unit,
-          timestamp: r.timestamp.iso8601
+          timestamp: r.recorded_at.iso8601
         }
       end
       puts JSON.pretty_generate(data)

@@ -19,6 +19,8 @@ SimpleCov.start do
   add_filter %r{/lib/dredger/iot/sensors/ds18b20_provider\.rb$}
   # Exclude all provider implementations from coverage; hardware-dependent
   add_filter %r{/lib/dredger/iot/sensors/.+_provider\.rb$}
+  # Exclude CLI executable from branch coverage analysis
+  add_filter %r{/bin/dredger$}
 end
 
 require 'bundler/setup'

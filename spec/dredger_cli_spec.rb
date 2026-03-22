@@ -89,9 +89,14 @@ RSpec.describe DredgerCLI do
   end
 
   describe '#create_sensor' do
-    before do
+    around do |example|
+      orig_gpio = ENV.fetch('DREDGER_IOT_GPIO_BACKEND', nil)
+      orig_i2c = ENV.fetch('DREDGER_IOT_I2C_BACKEND', nil)
       cli.instance_variable_set(:@options, { backend: 'simulation', format: 'text' })
       cli.send(:setup_backends)
+      example.run
+      ENV['DREDGER_IOT_GPIO_BACKEND'] = orig_gpio
+      ENV['DREDGER_IOT_I2C_BACKEND'] = orig_i2c
     end
 
     it 'creates an ADXL345 sensor' do

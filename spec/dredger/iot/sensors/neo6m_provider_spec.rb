@@ -43,7 +43,7 @@ RSpec.describe Dredger::IoT::Sensors::NEO6MProvider do
     end
 
     it 'raises on timeout with no valid sentences' do
-      serial = StringIO.new("")
+      serial = StringIO.new('')
       allow(serial).to receive(:wait_readable).and_return(false)
 
       allow(File).to receive(:open).with('/dev/ttyAMA0', 'r+').and_yield(serial)

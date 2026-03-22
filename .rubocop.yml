@@ -56,6 +56,8 @@ RSpec/SpecFilePathFormat:
     SCD30: scd30
     YFS201: yf_s201
     NEO6M: neo6m
+    NEO6MProvider: neo6m_provider
+    YFS201Provider: yf_s201_provider
 
 Metrics/BlockLength:
   Exclude:

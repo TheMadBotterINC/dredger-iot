@@ -20,7 +20,7 @@ RSpec.describe Dredger::IoT::Sensors::SCD30Provider do
       [byte1, byte2].each do |byte|
         crc ^= byte
         8.times do
-          crc = crc & 0x80 != 0 ? ((crc << 1) ^ 0x31) : (crc << 1)
+          crc = (crc & 0x80).nonzero? ? ((crc << 1) ^ 0x31) : (crc << 1)
           crc &= 0xFF
         end
       end
@@ -87,8 +87,6 @@ RSpec.describe Dredger::IoT::Sensors::SCD30Provider do
       provider.read_measurements(addr)
 
       # The initialization writes happen only once (set interval + start measurement)
-      # Count the write calls that look like initialization commands
-      init_writes = 0
       expect(i2c).to have_received(:write).at_least(:once)
     end
   end

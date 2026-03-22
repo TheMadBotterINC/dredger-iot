@@ -309,11 +309,11 @@ class DredgerCLI
 
     puts
     puts 'Recommendations:'
-    puts "  sudo apt-get install gpiod i2c-tools"
-    puts "  sudo usermod -a -G gpio $USER  # for GPIO access"
-    puts "  sudo usermod -a -G i2c $USER   # for I2C access"
-    puts "  sudo modprobe i2c-dev"
-    puts "  sudo modprobe w1-gpio; sudo modprobe w1-therm"
+    puts '  sudo apt-get install gpiod i2c-tools'
+    puts '  sudo usermod -a -G gpio $USER  # for GPIO access'
+    puts '  sudo usermod -a -G i2c $USER   # for I2C access'
+    puts '  sudo modprobe i2c-dev'
+    puts '  sudo modprobe w1-gpio; sudo modprobe w1-therm'
   end
 
   def check_device_node(path, desc)

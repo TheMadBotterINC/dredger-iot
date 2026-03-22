@@ -89,15 +89,17 @@ class DredgerCLI
 
   def list_sensors
     sensors = {
-      'dht22' => 'DHT22 - Temperature/Humidity (GPIO)',
+      'dht22' => 'DHT22 - Temperature/Humidity (GPIO) [requires C extension]',
       'bme280' => 'BME280 - Temperature/Humidity/Pressure (I2C)',
       'ds18b20' => 'DS18B20 - Waterproof Temperature (1-Wire)',
-      'bmp180' => 'BMP180 - Barometric Pressure/Temperature (I2C)',
-      'mcp9808' => 'MCP9808 - High-Accuracy Temperature (I2C)',
       'sht31' => 'SHT31 - Temperature/Humidity (I2C)',
       'bh1750' => 'BH1750 - Ambient Light (I2C)',
       'tsl2561' => 'TSL2561 - Ambient Light (I2C)',
-      'ina219' => 'INA219 - Bus Voltage/Current (I2C)'
+      'ina219' => 'INA219 - Bus Voltage/Current (I2C)',
+      'adxl345' => 'ADXL345 - 3-Axis Accelerometer (I2C)',
+      'scd30' => 'SCD30 - CO2/Temperature/Humidity (I2C)',
+      'yf_s201' => 'YF-S201 - Water Flow Meter (GPIO)',
+      'neo6m' => 'NEO-6M - GPS Module (UART/Serial)'
     }
 
     puts 'Available Sensors:'
@@ -167,6 +169,25 @@ class DredgerCLI
       shunt = @options[:ina219_shunt] || 0.1
       provider = Dredger::IoT::Sensors::INA219Provider.new(i2c_bus: i2c, shunt_resistance_ohms: shunt)
       Dredger::IoT::Sensors::INA219.new(i2c_addr: addr, provider: provider)
+    when 'adxl345'
+      addr = (args.shift || '0x53').to_i(16)
+      i2c = Dredger::IoT::Bus::Auto.i2c
+      provider = Dredger::IoT::Sensors::ADXL345Provider.new(i2c_bus: i2c)
+      Dredger::IoT::Sensors::ADXL345.new(i2c_addr: addr, provider: provider)
+    when 'scd30'
+      addr = (args.shift || '0x61').to_i(16)
+      i2c = Dredger::IoT::Bus::Auto.i2c
+      provider = Dredger::IoT::Sensors::SCD30Provider.new(i2c_bus: i2c)
+      Dredger::IoT::Sensors::SCD30.new(i2c_addr: addr, provider: provider)
+    when 'yf_s201'
+      pin = args.shift || 'P9_12'
+      gpio = Dredger::IoT::Bus::Auto.gpio
+      provider = Dredger::IoT::Sensors::YFS201Provider.new(gpio_bus: gpio)
+      Dredger::IoT::Sensors::YFS201.new(pin_label: pin, provider: provider)
+    when 'neo6m'
+      device = args.shift || '/dev/ttyAMA0'
+      provider = Dredger::IoT::Sensors::NEO6MProvider.new
+      Dredger::IoT::Sensors::NEO6M.new(device: device, provider: provider)
     else
       puts "Error: Unknown sensor type '#{type}'"
       exit 1

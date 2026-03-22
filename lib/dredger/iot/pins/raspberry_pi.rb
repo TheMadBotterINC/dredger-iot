@@ -8,11 +8,7 @@ module Dredger
       # - GPIO17, BCM17
       # - PIN11 (a.k.a. BOARD11)
       class RaspberryPi
-        PinRef = Struct.new(:label, :chip, :line, keyword_init: true) do
-          def to_s
-            chip && line ? "#{label}(chip#{chip}:#{line})" : label.to_s
-          end
-        end
+        PinRef = Pins::PinRef
 
         # Subset of BOARD pin to BCM mapping for common usable GPIOs on 40-pin header
         BOARD_TO_BCM = {

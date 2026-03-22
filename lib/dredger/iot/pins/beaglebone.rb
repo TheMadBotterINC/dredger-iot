@@ -5,13 +5,7 @@ module Dredger
     module Pins
       # Beaglebone header label mapping placeholder.
       class Beaglebone
-        # Provides validation and PinRef objects.
-        # Chip:line resolution is done at runtime by the agent or a backend.
-        PinRef = Struct.new(:label, :chip, :line, keyword_init: true) do
-          def to_s
-            chip && line ? "#{label}(chip#{chip}:#{line})" : label.to_s
-          end
-        end
+        PinRef = Pins::PinRef
 
         KNOWN_LABELS = (
           (0..46).map { |n| "P8_#{n}" } + (0..46).map { |n| "P9_#{n}" }

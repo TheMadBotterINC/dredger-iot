@@ -61,6 +61,22 @@ RSpec.describe Dredger::IoT::Sensors::ADXL345Provider do
       expect(result[:y_g]).to be < 0
     end
 
+    it 'only configures the sensor once across multiple reads' do
+      provider = described_class.new(i2c_bus: i2c, range: 2)
+
+      allow(i2c).to receive(:read).with(addr, 1, register: 0x00).and_return([0xE5])
+      allow(i2c).to receive(:read).with(addr, 6, register: 0x32).and_return([0x00] * 6)
+      allow(i2c).to receive(:write)
+
+      provider.read_measurements(addr)
+      provider.read_measurements(addr)
+      provider.read_measurements(addr)
+
+      # DATA_FORMAT and POWER_CTL writes should happen only once
+      expect(i2c).to have_received(:write).with(addr, [0x00], register: 0x31).once
+      expect(i2c).to have_received(:write).with(addr, [0x08], register: 0x2D).once
+    end
+
     it 'rejects invalid range values' do
       expect { described_class.new(i2c_bus: i2c, range: 3) }
         .not_to raise_error # range validated at configure time, not init

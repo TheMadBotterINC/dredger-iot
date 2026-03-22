@@ -33,6 +33,7 @@ module Dredger
           @i2c = i2c_bus
           @range = range
           @scale_factor = calculate_scale_factor(range)
+          @configured = false
         end
 
         # Read acceleration measurements from the ADXL345 at the given I2C address.
@@ -43,7 +44,10 @@ module Dredger
           raise IOError, "ADXL345 not found (devid=0x#{dev_id.to_s(16)})" unless dev_id == DEVID_EXPECTED
 
           # Configure sensor (one-time setup)
-          configure_sensor(addr)
+          unless @configured
+            configure_sensor(addr)
+            @configured = true
+          end
 
           # Read 6 bytes of acceleration data (X, Y, Z as 16-bit signed integers)
           raw = @i2c.read(addr, 6, register: DATAX0_REG)

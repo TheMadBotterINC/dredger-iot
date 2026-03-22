@@ -19,6 +19,10 @@ module Dredger
           @backend.read(addr, length, register: register)
         end
 
+        def close
+          @backend.close if @backend.respond_to?(:close)
+        end
+
         # Simulation backend keeps a per-address register map
         class Simulation
           def initialize

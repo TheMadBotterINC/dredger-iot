@@ -74,6 +74,21 @@ RSpec.describe Dredger::IoT::Bus::GPIOLabelAdapter do
     expect(backend.last_op).to eq([:read])
   end
 
+  it 'delegates close to backend when backend supports it' do
+    backend = DummyLibgpiodBackend.new
+    def backend.close; @closed = true; end
+    def backend.closed?; @closed; end
+    adapter = described_class.new(backend: backend)
+    adapter.close
+    expect(backend.closed?).to be(true)
+  end
+
+  it 'does not error when backend has no close method' do
+    backend = DummyLibgpiodBackend.new
+    adapter = described_class.new(backend: backend)
+    expect { adapter.close }.not_to raise_error
+  end
+
   it 'raises Unsupported pin format when mapper cannot resolve' do
     backend = DummyLibgpiodBackend.new
     mapper = Module.new # does not respond to :resolve_label_to_pinref

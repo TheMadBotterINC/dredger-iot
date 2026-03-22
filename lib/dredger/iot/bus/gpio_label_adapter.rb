@@ -24,6 +24,10 @@ module Dredger
           @backend.read(resolve(pin))
         end
 
+        def close
+          @backend.close if @backend.respond_to?(:close)
+        end
+
         private
 
         # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity

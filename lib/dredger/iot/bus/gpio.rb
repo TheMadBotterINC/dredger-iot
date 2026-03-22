@@ -21,6 +21,10 @@ module Dredger
           @backend.read(pin_label)
         end
 
+        def close
+          @backend.close if @backend.respond_to?(:close)
+        end
+
         # Simulation backend for tests/development
         class Simulation
           def initialize

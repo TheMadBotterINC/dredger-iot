@@ -18,6 +18,23 @@ RSpec.describe Dredger::IoT::Bus::GPIO do
     expect(bus.read('P9_14')).to eq(1)
   end
 
+  it 'responds to close without error' do
+    sim = described_class::Simulation.new
+    bus = described_class.new(backend: sim)
+
+    expect { bus.close }.not_to raise_error
+  end
+
+  it 'delegates close to backend when backend supports it' do
+    backend = instance_double('Backend', close: nil)
+    allow(backend).to receive(:respond_to?).and_return(false)
+    allow(backend).to receive(:respond_to?).with(:close).and_return(true)
+    bus = described_class.new(backend: backend)
+
+    bus.close
+    expect(backend).to have_received(:close)
+  end
+
   it 'validates directions and values' do
     sim = described_class::Simulation.new
     bus = described_class.new(backend: sim)

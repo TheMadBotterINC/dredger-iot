@@ -11,6 +11,23 @@ RSpec.describe Dredger::IoT::Bus::I2C do
     expect(bus.read(0x76, 3, register: 0x10)).to eq([0xAA, 0xBB, 0xCC])
   end
 
+  it 'responds to close without error' do
+    sim = described_class::Simulation.new
+    bus = described_class.new(backend: sim)
+
+    expect { bus.close }.not_to raise_error
+  end
+
+  it 'delegates close to backend when backend supports it' do
+    backend = instance_double('Backend', close: nil)
+    allow(backend).to receive(:respond_to?).and_return(false)
+    allow(backend).to receive(:respond_to?).with(:close).and_return(true)
+    bus = described_class.new(backend: backend)
+
+    bus.close
+    expect(backend).to have_received(:close)
+  end
+
   it 'supports sequential write without register and seed helper' do
     sim = described_class::Simulation.new
     bus = described_class.new(backend: sim)

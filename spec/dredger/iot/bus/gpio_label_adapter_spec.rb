@@ -75,12 +75,12 @@ RSpec.describe Dredger::IoT::Bus::GPIOLabelAdapter do
   end
 
   it 'delegates close to backend when backend supports it' do
+    close_called = false
     backend = DummyLibgpiodBackend.new
-    def backend.close; @closed = true; end
-    def backend.closed?; @closed; end
+    backend.define_singleton_method(:close) { close_called = true }
     adapter = described_class.new(backend: backend)
     adapter.close
-    expect(backend.closed?).to be(true)
+    expect(close_called).to be(true)
   end
 
   it 'does not error when backend has no close method' do

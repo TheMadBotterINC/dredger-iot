@@ -19,13 +19,13 @@ RSpec.describe Dredger::IoT::Bus::I2C do
   end
 
   it 'delegates close to backend when backend supports it' do
-    backend = instance_double('Backend', close: nil)
-    allow(backend).to receive(:respond_to?).and_return(false)
-    allow(backend).to receive(:respond_to?).with(:close).and_return(true)
-    bus = described_class.new(backend: backend)
+    close_called = false
+    sim = described_class::Simulation.new
+    sim.define_singleton_method(:close) { close_called = true }
+    bus = described_class.new(backend: sim)
 
     bus.close
-    expect(backend).to have_received(:close)
+    expect(close_called).to be(true)
   end
 
   it 'supports sequential write without register and seed helper' do

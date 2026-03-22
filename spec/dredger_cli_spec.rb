@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'json'
 
 # Load the CLI class
-load File.expand_path('../../../bin/dredger', __dir__)
+load File.expand_path('../bin/dredger', __dir__)
 
 RSpec.describe DredgerCLI do
   let(:cli) { described_class.new }

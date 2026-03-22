@@ -23,7 +23,13 @@ module Dredger
         # Read temperature from DS18B20 sensor.
         # device_id: device address (e.g., "28-0000056789ab")
         # Returns temperature in Celsius as Float
+        VALID_DEVICE_ID = /\A28-[0-9a-f]+\z/
+
         def read_temperature(device_id)
+          unless device_id.match?(VALID_DEVICE_ID)
+            raise ArgumentError, "Invalid DS18B20 device_id: #{device_id}. Expected format: 28-xxxxxxxxxxxx"
+          end
+
           device_path = File.join(@base_path, device_id, 'w1_slave')
           raise IOError, "DS18B20 device not found: #{device_id}" unless File.exist?(device_path)
 
